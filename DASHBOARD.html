@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ServerlessOps · Observability</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.31.0/tabler-icons.min.css"/>
+<style>
+:root {
+  --bg: #0d0f14;
+  --bg2: #13161d;
+  --bg3: #1a1d27;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #e8eaf0;
+  --text2: #8b8fa8;
+  --text3: #5a5e72;
+  --green: #1fcc8a;
+  --green-dim: rgba(31,204,138,0.12);
+  --amber: #f5a623;
+  --amber-dim: rgba(245,166,35,0.12);
+  --red: #f04e4e;
+  --red-dim: rgba(240,78,78,0.12);
+  --blue: #4d8ef0;
+  --blue-dim: rgba(77,142,240,0.12);
+  --purple: #9b6ef5;
+  --radius: 10px;
+  --radius-sm: 6px;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-size: 13px; line-height: 1.5; overflow: hidden; }
+
+/* ── Layout ── */
+.shell { display: flex; height: 100vh; }
+.sidebar { width: 210px; flex-shrink: 0; background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 0; }
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.topbar { padding: 14px 20px; background: var(--bg2); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.content { flex: 1; overflow-y: auto; padding: 18px 20px; }
+
+/* ── Sidebar ── */
+.logo { padding: 0 16px 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+.logo-icon { width: 34px; height: 34px; background: linear-gradient(135deg, #1fcc8a, #0e9e68); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 17px; color: #fff; flex-shrink: 0; }
+.logo-name { font-size: 13px; font-weight: 700; letter-spacing: .04em; color: var(--text); }
+.logo-tag { font-size: 10px; color: var(--text3); letter-spacing: .08em; text-transform: uppercase; }
+.nav-group { padding: 0 10px; margin-bottom: 18px; }
+.nav-label { font-size: 9px; font-weight: 700; color: var(--text3); letter-spacing: .12em; text-transform: uppercase; padding: 0 8px; margin-bottom: 4px; }
+.nav-item { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: var(--radius-sm); cursor: pointer; color: var(--text2); transition: all .15s; position: relative; }
+.nav-item:hover { background: var(--bg3); color: var(--text); }
+.nav-item.active { background: var(--green-dim); color: var(--green); }
+.nav-item.active::before { content: ''; position: absolute; left: 0; top: 6px; bottom: 6px; width: 2px; background: var(--green); border-radius: 2px; }
+.nav-item i { font-size: 16px; width: 18px; text-align: center; }
+.nav-badge { margin-left: auto; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 20px; }
+.badge-red { background: var(--red-dim); color: var(--red); }
+.badge-green { background: var(--green-dim); color: var(--green); }
+.sidebar-footer { margin-top: auto; padding: 0 10px 0; border-top: 1px solid var(--border); padding-top: 12px; }
+
+/* ── Topbar ── */
+.topbar-left { flex: 1; display: flex; align-items: center; gap: 10px; }
+.conn-indicator { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text2); }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text3); flex-shrink: 0; }
+.dot.live { background: var(--green); box-shadow: 0 0 0 3px rgba(31,204,138,.2); animation: pulse 2s infinite; }
+.dot.warn { background: var(--amber); }
+.dot.err { background: var(--red); }
+@keyframes pulse { 0%,100% { box-shadow: 0 0 0 3px rgba(31,204,138,.2); } 50% { box-shadow: 0 0 0 6px rgba(31,204,138,.05); } }
+.region-tag { font-size: 11px; color: var(--text3); background: var(--bg3); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; }
+.topbar-btn { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border2); background: var(--bg3); color: var(--text2); cursor: pointer; font-size: 12px; font-family: inherit; transition: all .15s; }
+.topbar-btn:hover { background: var(--bg); color: var(--text); border-color: var(--border2); }
+.topbar-btn.primary { background: var(--green); color: #000; border-color: transparent; font-weight: 600; }
+.topbar-btn.primary:hover { background: #25e09a; }
+.topbar-btn.connected { border-color: var(--green); color: var(--green); }
+.auto-refresh-label { font-size: 11px; color: var(--text3); }
+
+/* ── Metrics Grid ── */
+.metrics-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 16px; }
+.metric-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; position: relative; overflow: hidden; transition: border-color .2s; }
+.metric-card:hover { border-color: var(--border2); }
+.metric-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; border-radius: var(--radius) var(--radius) 0 0; }
+.metric-card.m-green::before { background: var(--green); }
+.metric-card.m-amber::before { background: var(--amber); }
+.metric-card.m-red::before { background: var(--red); }
+.metric-card.m-blue::before { background: var(--blue); }
+.metric-card.m-purple::before { background: var(--purple); }
+.metric-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+.metric-value { font-size: 24px; font-weight: 700; color: var(--text); letter-spacing: -.02em; line-height: 1; margin-bottom: 6px; }
+.metric-delta { font-size: 11px; }
+.delta-up { color: var(--green); }
+.delta-dn { color: var(--red); }
+.delta-neutral { color: var(--text3); }
+.skeleton { background: linear-gradient(90deg, var(--bg3) 25%, var(--bg2) 50%, var(--bg3) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px; height: 24px; width: 80px; }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ── Section Rows ── */
+.section-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+.section-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.card-title { font-size: 12px; font-weight: 600; color: var(--text); letter-spacing: .04em; text-transform: uppercase; }
+.card-action { font-size: 11px; color: var(--text3); cursor: pointer; padding: 3px 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); transition: all .15s; }
+.card-action:hover { color: var(--text); border-color: var(--border2); }
+
+/* ── Service Health ── */
+.svc-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+.svc-row:last-child { border-bottom: none; padding-bottom: 0; }
+.svc-icon { width: 30px; height: 30px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.svc-info { flex: 1; }
+.svc-name { font-size: 12px; font-weight: 600; color: var(--text); }
+.svc-meta { font-size: 10px; color: var(--text3); margin-top: 1px; }
+.health-bar { height: 3px; background: var(--bg3); border-radius: 2px; margin-top: 5px; overflow: hidden; }
+.health-fill { height: 100%; border-radius: 2px; transition: width .6s ease; }
+.svc-stat { text-align: right; font-size: 11px; }
+
+/* ── Charts ── */
+.chart-wrap { position: relative; width: 100%; }
+
+/* ── Log Stream ── */
+.log-stream { font-size: 11px; font-family: 'SF Mono', 'Fira Code', monospace; }
+.log-entry { display: flex; align-items: flex-start; gap: 8px; padding: 6px 8px; border-radius: 5px; margin-bottom: 3px; }
+.log-entry.error { background: rgba(240,78,78,.08); border-left: 2px solid var(--red); }
+.log-entry.warn { background: rgba(245,166,35,.08); border-left: 2px solid var(--amber); }
+.log-entry.info { background: var(--bg3); border-left: 2px solid var(--border2); }
+.log-time { color: var(--text3); flex-shrink: 0; width: 58px; }
+.log-level { flex-shrink: 0; width: 40px; font-weight: 700; }
+.log-entry.error .log-level { color: var(--red); }
+.log-entry.warn .log-level { color: var(--amber); }
+.log-entry.info .log-level { color: var(--text3); }
+.log-msg { color: var(--text2); word-break: break-all; }
+.log-empty { color: var(--text3); text-align: center; padding: 20px; }
+
+/* ── Alert Banner ── */
+.alert-banner { display: none; align-items: center; gap: 8px; background: rgba(245,166,35,.1); border: 1px solid rgba(245,166,35,.3); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 12px; color: var(--amber); margin-bottom: 14px; }
+.alert-banner.show { display: flex; }
+
+/* ── Function Table ── */
+.fn-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.fn-table th { color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--border); }
+.fn-table td { padding: 8px 8px; border-bottom: 1px solid var(--border); color: var(--text2); }
+.fn-table tr:last-child td { border-bottom: none; }
+.fn-table tr:hover td { background: var(--bg3); }
+.runtime-badge { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 600; background: var(--blue-dim); color: var(--blue); }
+
+/* ── AWS Modal ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 200; }
+.modal-overlay.show { display: flex; }
+.modal-box { background: var(--bg2); border: 1px solid var(--border2); border-radius: 14px; padding: 28px; width: 380px; }
+.modal-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.modal-sub { font-size: 12px; color: var(--text3); margin-bottom: 22px; line-height: 1.6; }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 11px; color: var(--text2); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .06em; }
+.field input, .field select { width: 100%; background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--radius-sm); padding: 9px 12px; font-size: 13px; color: var(--text); font-family: inherit; outline: none; transition: border-color .15s; }
+.field input:focus, .field select:focus { border-color: var(--green); }
+.field select option { background: var(--bg2); }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 22px; }
+.btn { padding: 9px 20px; border-radius: var(--radius-sm); font-size: 13px; font-family: inherit; cursor: pointer; border: none; font-weight: 600; }
+.btn-cancel { background: var(--bg3); color: var(--text2); border: 1px solid var(--border); }
+.btn-cancel:hover { color: var(--text); }
+.btn-connect { background: var(--green); color: #000; }
+.btn-connect:hover { background: #25e09a; }
+.modal-error { font-size: 12px; color: var(--red); margin-top: 10px; display: none; }
+.modal-error.show { display: block; }
+
+/* ── Error State ── */
+.state-msg { text-align: center; padding: 28px; color: var(--text3); font-size: 12px; }
+.state-msg i { font-size: 28px; display: block; margin-bottom: 8px; opacity: .4; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 10px; }
+</style>
+</head>
+<body>
+
+<!-- AWS Connect Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <p class="modal-title">Connect AWS Account</p>
+    <p class="modal-sub">Enter IAM credentials with read-only access to CloudWatch, Lambda, DynamoDB, and SQS. Credentials are sent only to your local backend server.</p>
+    <div class="field"><label>Access Key ID</label><input id="akid" type="text" placeholder="AKIAIOSFODNN7EXAMPLE" autocomplete="off"/></div>
+    <div class="field"><label>Secret Access Key</label><input id="sak" type="password" placeholder="••••••••••••••••••••"/></div>
+    <div class="field"><label>Region</label>
+      <select id="region">
+        <option value="us-east-1">us-east-1 · N. Virginia</option>
+        <option value="us-west-2">us-west-2 · Oregon</option>
+        <option value="ap-south-1">ap-south-1 · Mumbai</option>
+        <option value="ap-southeast-1">ap-southeast-1 · Singapore</option>
+        <option value="eu-west-1">eu-west-1 · Ireland</option>
+        <option value="eu-central-1">eu-central-1 · Frankfurt</option>
+      </select>
+    </div>
+    <div class="field"><label>Session Token <span style="color:var(--text3)">(optional)</span></label><input id="token" type="password" placeholder="For temporary STS credentials"/></div>
+    <p class="modal-error" id="modalError"></p>
+    <div class="modal-actions">
+      <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-connect" id="connectBtn" onclick="doConnect()">Connect ↗</button>
+    </div>
+  </div>
+</div>
+
+<div class="shell">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="logo">
+      <div class="logo-icon"><i class="ti ti-topology-star-3"></i></div>
+      <div><div class="logo-name">ServerlessOps</div><div class="logo-tag">Observability</div></div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">Monitor</div>
+      <div class="nav-item active"><i class="ti ti-layout-dashboard"></i>Overview</div>
+      <div class="nav-item"><i class="ti ti-bolt"></i>Lambda <span class="nav-badge badge-green" id="fnBadge">—</span></div>
+      <div class="nav-item"><i class="ti ti-api"></i>API Gateway</div>
+      <div class="nav-item"><i class="ti ti-database"></i>DynamoDB</div>
+      <div class="nav-item"><i class="ti ti-bucket"></i>S3 Buckets</div>
+      <div class="nav-item"><i class="ti ti-messages"></i>SQS / SNS <span class="nav-badge badge-red" id="sqsBadge">—</span></div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">Observe</div>
+      <div class="nav-item"><i class="ti ti-file-text"></i>CloudWatch Logs</div>
+      <div class="nav-item"><i class="ti ti-chart-line"></i>Metrics</div>
+      <div class="nav-item"><i class="ti ti-git-branch"></i>X-Ray Traces</div>
+      <div class="nav-item"><i class="ti ti-bell"></i>Alerts <span class="nav-badge badge-red" id="alertBadge" style="display:none">!</span></div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="nav-item"><i class="ti ti-settings"></i>Settings</div>
+      <div class="nav-item"><i class="ti ti-help-circle"></i>Docs</div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="conn-indicator">
+          <div class="dot" id="connDot"></div>
+          <span id="connLabel">Not connected</span>
+        </div>
+        <span class="region-tag" id="regionTag">—</span>
+      </div>
+      <span class="auto-refresh-label" id="refreshLabel"></span>
+      <button class="topbar-btn" id="refreshBtn" onclick="refreshAll()" title="Refresh data" style="display:none">
+        <i class="ti ti-refresh"></i>
+      </button>
+      <button class="topbar-btn primary" id="awsBtn" onclick="openModal()">
+        <i class="ti ti-plug-connected"></i> Connect AWS
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <!-- Alert banner -->
+      <div class="alert-banner" id="alertBanner">
+        <i class="ti ti-alert-triangle"></i>
+        <span id="alertMsg"></span>
+      </div>
+
+      <!-- KPI Metrics -->
+      <div class="metrics-grid">
+        <div class="metric-card m-green">
+          <div class="metric-label"><i class="ti ti-bolt"></i> Invocations</div>
+          <div class="metric-value" id="m-invoc">—</div>
+          <div class="metric-delta delta-up" id="m-invoc-d">24h total</div>
+        </div>
+        <div class="metric-card m-blue">
+          <div class="metric-label"><i class="ti ti-clock"></i> Avg Duration</div>
+          <div class="metric-value" id="m-dur">—</div>
+          <div class="metric-delta delta-neutral" id="m-dur-d">average</div>
+        </div>
+        <div class="metric-card m-red">
+          <div class="metric-label"><i class="ti ti-circle-x"></i> Error Rate</div>
+          <div class="metric-value" id="m-err">—</div>
+          <div class="metric-delta" id="m-err-d"></div>
+        </div>
+        <div class="metric-card m-blue">
+          <div class="metric-label"><i class="ti ti-api"></i> API p99 Latency</div>
+          <div class="metric-value" id="m-lat">—</div>
+          <div class="metric-delta delta-neutral" id="m-lat-d">p99</div>
+        </div>
+        <div class="metric-card m-amber">
+          <div class="metric-label"><i class="ti ti-database"></i> DDB Reads</div>
+          <div class="metric-value" id="m-rcu">—</div>
+          <div class="metric-delta delta-neutral" id="m-rcu-d">RCU consumed</div>
+        </div>
+        <div class="metric-card m-purple">
+          <div class="metric-label"><i class="ti ti-messages"></i> SQS Depth</div>
+          <div class="metric-value" id="m-sqs">—</div>
+          <div class="metric-delta" id="m-sqs-d"></div>
+        </div>
+      </div>
+
+      <!-- Service Health + Invocations Chart -->
+      <div class="section-row">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Service Health</span>
+            <span class="card-action" onclick="refreshAll()">↻ refresh</span>
+          </div>
+          <div id="healthPanel">
+            <div class="state-msg"><i class="ti ti-plug"></i>Connect to view service health</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Invocations · 24h</span>
+            <span style="font-size:11px;color:var(--text3)">Lambda + Errors</span>
+          </div>
+          <div class="chart-wrap" style="height:180px"><canvas id="invocChart"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Log Stream (full width) -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-header">
+          <span class="card-title">CloudWatch Log Stream</span>
+          <div style="display:flex;gap:8px">
+            <span class="card-action" onclick="loadLogs()">↻ refresh logs</span>
+          </div>
+        </div>
+        <div class="log-stream" id="logStream">
+          <div class="log-empty"><i class="ti ti-terminal" style="font-size:22px;display:block;margin-bottom:6px;opacity:.3"></i>Connect your AWS account to stream live CloudWatch logs</div>
+        </div>
+      </div>
+
+      <!-- Cold Starts + DynamoDB + SQS -->
+      <div class="section-row-3" style="margin-bottom:14px">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Cold Starts</span></div>
+          <div class="chart-wrap" style="height:150px"><canvas id="coldChart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">DynamoDB Capacity</span></div>
+          <div class="chart-wrap" style="height:150px"><canvas id="ddbChart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">SQS Queue Depths</span></div>
+          <div id="sqsPanel" class="chart-wrap" style="height:150px;overflow-y:auto">
+            <div class="state-msg" style="padding:20px 0"><i class="ti ti-messages" style="font-size:22px;display:block;margin-bottom:6px;opacity:.3"></i>No data</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lambda Function Table -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">Lambda Functions</span><span class="card-action" onclick="loadFunctions()">↻ refresh</span></div>
+        <div id="fnTableWrap">
+          <div class="state-msg"><i class="ti ti-bolt" style="font-size:22px;display:block;margin-bottom:6px;opacity:.3"></i>Connect to view functions</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ─── Config ────────────────────────────────────────────────────────────────
+const API = 'http://localhost:3001'; // change if your backend runs elsewhere
+let creds = null;
+let refreshTimer = null;
+let charts = {};
+const REFRESH_INTERVAL = 60; // seconds
+
+// ─── Modal ─────────────────────────────────────────────────────────────────
+function openModal() { document.getElementById('modal').classList.add('show'); }
+function closeModal() { document.getElementById('modal').classList.remove('show'); }
+
+async function doConnect() {
+  const akid = document.getElementById('akid').value.trim();
+  const sak = document.getElementById('sak').value.trim();
+  const region = document.getElementById('region').value;
+  const token = document.getElementById('token').value.trim();
+  const errEl = document.getElementById('modalError');
+  const btn = document.getElementById('connectBtn');
+
+  if (!akid || !sak) { showModalError('Access Key ID and Secret Access Key are required.'); return; }
+  errEl.classList.remove('show');
+  btn.textContent = 'Connecting…';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`${API}/api/connect`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ accessKeyId: akid, secretAccessKey: sak, region, sessionToken: token || undefined }),
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Authentication failed');
+
+    creds = { accessKeyId: akid, secretAccessKey: sak, region, sessionToken: token || undefined };
+    closeModal();
+    setConnected(region);
+    await refreshAll();
+    startAutoRefresh();
+  } catch (err) {
+    showModalError(err.message);
+  } finally {
+    btn.textContent = 'Connect ↗';
+    btn.disabled = false;
+  }
+}
+
+function showModalError(msg) {
+  const el = document.getElementById('modalError');
+  el.textContent = '✗ ' + msg;
+  el.classList.add('show');
+}
+
+// ─── Connection State ───────────────────────────────────────────────────────
+function setConnected(region) {
+  document.getElementById('connDot').className = 'dot live';
+  document.getElementById('connLabel').textContent = 'Live';
+  document.getElementById('regionTag').textContent = region;
+  document.getElementById('awsBtn').textContent = '✓ Connected';
+  document.getElementById('awsBtn').classList.remove('primary');
+  document.getElementById('awsBtn').classList.add('connected');
+  document.getElementById('refreshBtn').style.display = 'flex';
+}
+
+// ─── Auto Refresh ───────────────────────────────────────────────────────────
+function startAutoRefresh() {
+  if (refreshTimer) clearInterval(refreshTimer);
+  let countdown = REFRESH_INTERVAL;
+  updateRefreshLabel(countdown);
+  refreshTimer = setInterval(() => {
+    countdown--;
+    if (countdown <= 0) {
+      countdown = REFRESH_INTERVAL;
+      refreshAll();
+    }
+    updateRefreshLabel(countdown);
+  }, 1000);
+}
+function updateRefreshLabel(s) {
+  document.getElementById('refreshLabel').textContent = `Auto-refresh in ${s}s`;
+}
+
+// ─── Refresh All ────────────────────────────────────────────────────────────
+async function refreshAll() {
+  if (!creds) return;
+  await Promise.all([
+    loadMetrics(),
+    loadServiceHealth(),
+    loadInvocChart(),
+    loadLogs(),
+    loadFunctions(),
+    loadDynamoDB(),
+    loadSQS(),
+  ]);
+}
+
+// ─── POST helper ─────────────────────────────────────────────────────────────
+async function apiPost(endpoint, extra = {}) {
+  const res = await fetch(`${API}${endpoint}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...creds, ...extra }),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+// ─── Metrics ────────────────────────────────────────────────────────────────
+async function loadMetrics() {
+  try {
+    const d = await apiPost('/api/metrics');
+    document.getElementById('m-invoc').textContent = fmtNum(d.invocations.value);
+    document.getElementById('m-invoc-d').textContent = '24h total';
+    document.getElementById('m-dur').textContent = d.duration.avg + 'ms';
+    document.getElementById('m-err').textContent = d.errors.rate + '%';
+    const errClass = d.errors.rate > 2 ? 'delta-dn' : d.errors.rate > 0.5 ? 'delta-neutral' : 'delta-up';
+    document.getElementById('m-err-d').className = 'metric-delta ' + errClass;
+    document.getElementById('m-err-d').textContent = d.errors.value + ' errors';
+    document.getElementById('m-lat').textContent = d.apiLatencyP99.value + 'ms';
+    document.getElementById('m-rcu').textContent = fmtNum(d.ddbRcu.value);
+    document.getElementById('m-rcu-d').textContent = 'WCU: ' + fmtNum(d.ddbWcu.value);
+
+    // SQS depth is loaded separately
+  } catch (err) {
+    console.error('Metrics error:', err);
+  }
+}
+
+// ─── Service Health ──────────────────────────────────────────────────────────
+async function loadServiceHealth() {
+  try {
+    const d = await apiPost('/api/service-health');
+    const panel = document.getElementById('healthPanel');
+    const icons = { lambda: 'ti-bolt', dynamodb: 'ti-database', sqs: 'ti-messages', apigateway: 'ti-api' };
+    const colors = { lambda: '#1fcc8a', dynamodb: '#f5a623', sqs: '#9b6ef5', apigateway: '#4d8ef0' };
+    const labels = { lambda: 'Lambda', dynamodb: 'DynamoDB', sqs: 'SQS / SNS', apigateway: 'API Gateway' };
+
+    panel.innerHTML = d.health.map(h => {
+      const ok = h.status === 'ok';
+      const color = ok ? colors[h.name] || '#1fcc8a' : '#f04e4e';
+      const icon = icons[h.name] || 'ti-server';
+      const meta = ok ? `${h.count ?? 0} resources` : 'Error accessing service';
+      return `
+        <div class="svc-row">
+          <div class="svc-icon" style="background:${color}22;color:${color}"><i class="ti ${icon}"></i></div>
+          <div class="svc-info">
+            <div class="svc-name">${labels[h.name] || h.name}</div>
+            <div class="svc-meta">${meta}</div>
+            <div class="health-bar"><div class="health-fill" style="width:${ok ? 99 : 30}%;background:${color}"></div></div>
+          </div>
+          <div class="svc-stat" style="color:${color}">${ok ? '✓ OK' : '✗ ERR'}</div>
+        </div>`;
+    }).join('');
+
+    // Update function badge
+    const lambdaH = d.health.find(h => h.name === 'lambda');
+    if (lambdaH?.count) document.getElementById('fnBadge').textContent = lambdaH.count;
+  } catch (err) {
+    console.error('Health error:', err);
+  }
+}
+
+// ─── Invocation Chart ────────────────────────────────────────────────────────
+async function loadInvocChart() {
+  try {
+    const d = await apiPost('/api/invocations-chart');
+    const labels = (d.timestamps || []).map(t => {
+      const dt = new Date(t);
+      return dt.getHours().toString().padStart(2,'0') + ':00';
+    });
+    if (charts.invoc) charts.invoc.destroy();
+    charts.invoc = new Chart(document.getElementById('invocChart'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          { label: 'Invocations', data: d.invocations, borderColor: '#1fcc8a', backgroundColor: 'rgba(31,204,138,.06)', borderWidth: 1.5, pointRadius: 0, tension: .4, fill: true },
+          { label: 'Errors', data: d.errors, borderColor: '#f04e4e', backgroundColor: 'rgba(240,78,78,.06)', borderWidth: 1.5, pointRadius: 0, tension: .4, fill: true },
+        ]
+      },
+      options: chartOpts()
+    });
+  } catch (err) {
+    console.error('Chart error:', err);
+  }
+}
+
+// ─── Logs ────────────────────────────────────────────────────────────────────
+async function loadLogs() {
+  try {
+    const d = await apiPost('/api/logs');
+    const stream = document.getElementById('logStream');
+    if (!d.events?.length) {
+      stream.innerHTML = '<div class="log-empty">No recent log events found</div>';
+      return;
+    }
+
+    // Count alerts
+    const errors = d.events.filter(e => e.level === 'error').length;
+    if (errors > 0) {
+      document.getElementById('alertBanner').classList.add('show');
+      document.getElementById('alertMsg').textContent = `${errors} error event${errors > 1 ? 's' : ''} detected in the last hour — check log stream below`;
+      document.getElementById('alertBadge').style.display = 'inline';
+      document.getElementById('alertBadge').textContent = errors;
+    }
+
+    stream.innerHTML = d.events.map(e => {
+      const ts = new Date(e.timestamp).toTimeString().slice(0, 8);
+      const fnName = (e.logGroup || '').split('/').pop();
+      return `<div class="log-entry ${e.level}">
+        <span class="log-time">${ts}</span>
+        <span class="log-level">${e.level.toUpperCase()}</span>
+        <span class="log-msg">[${fnName}] ${e.message}</span>
+      </div>`;
+    }).join('');
+  } catch (err) {
+    console.error('Logs error:', err);
+  }
+}
+
+// ─── Lambda Functions Table ──────────────────────────────────────────────────
+async function loadFunctions() {
+  try {
+    const d = await apiPost('/api/lambda-functions');
+    const wrap = document.getElementById('fnTableWrap');
+    if (!d.functions?.length) { wrap.innerHTML = '<div class="state-msg">No Lambda functions found</div>'; return; }
+
+    document.getElementById('fnBadge').textContent = d.functions.length;
+    wrap.innerHTML = `<table class="fn-table">
+      <thead><tr><th>Function</th><th>Runtime</th><th>Memory</th><th>Timeout</th><th>Cold Start</th><th>Last Modified</th></tr></thead>
+      <tbody>${d.functions.map(fn => `
+        <tr>
+          <td style="color:var(--text);font-weight:600">${fn.name}</td>
+          <td><span class="runtime-badge">${fn.runtime || '—'}</span></td>
+          <td>${fn.memory ?? '—'} MB</td>
+          <td>${fn.timeout ?? '—'}s</td>
+          <td style="color:${fn.coldStartMs > 500 ? 'var(--amber)' : 'var(--green)'}">${fn.coldStartMs ? fn.coldStartMs + 'ms' : '—'}</td>
+          <td style="color:var(--text3)">${fn.lastModified ? new Date(fn.lastModified).toLocaleDateString() : '—'}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+  } catch (err) {
+    console.error('Functions error:', err);
+  }
+}
+
+// ─── DynamoDB Chart ──────────────────────────────────────────────────────────
+async function loadDynamoDB() {
+  try {
+    const d = await apiPost('/api/dynamodb');
+    const tables = d.tables || [];
+    const labels = tables.map(t => t.name.length > 12 ? t.name.slice(0, 12) + '…' : t.name);
+    if (charts.ddb) charts.ddb.destroy();
+    charts.ddb = new Chart(document.getElementById('ddbChart'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          { label: 'RCU', data: tables.map(t => t.rcuConsumed), backgroundColor: '#4d8ef0', borderRadius: 3 },
+          { label: 'WCU', data: tables.map(t => t.wcuConsumed), backgroundColor: '#f5a623', borderRadius: 3 },
+        ]
+      },
+      options: { ...chartOpts(), indexAxis: undefined }
+    });
+  } catch (err) {
+    console.error('DynamoDB error:', err);
+  }
+}
+
+// ─── SQS Panel ───────────────────────────────────────────────────────────────
+async function loadSQS() {
+  try {
+    const d = await apiPost('/api/sqs');
+    const queues = d.queues || [];
+    const panel = document.getElementById('sqsPanel');
+
+    // Update badge
+    const dlqCount = queues.filter(q => q.isDLQ && q.depth > 0).length;
+    if (dlqCount > 0) document.getElementById('sqsBadge').textContent = dlqCount;
+
+    const totalDepth = queues.reduce((a, q) => a + q.depth, 0);
+    document.getElementById('m-sqs').textContent = fmtNum(totalDepth);
+    const dlqMsgs = queues.filter(q => q.isDLQ).reduce((a, q) => a + q.depth, 0);
+    document.getElementById('m-sqs-d').textContent = `DLQ: ${dlqMsgs} msgs`;
+    document.getElementById('m-sqs-d').className = 'metric-delta ' + (dlqMsgs > 0 ? 'delta-dn' : 'delta-up');
+
+    if (!queues.length) { panel.innerHTML = '<div class="state-msg" style="padding:20px 0">No queues found</div>'; return; }
+
+    panel.innerHTML = queues.map(q => `
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:11px">
+        <div style="flex:1;overflow:hidden">
+          <div style="color:${q.isDLQ ? 'var(--red)' : 'var(--text)'};font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${q.name}</div>
+          <div style="color:var(--text3)">${q.inFlight} in-flight</div>
+        </div>
+        <div style="color:${q.depth > 100 ? 'var(--red)' : q.depth > 10 ? 'var(--amber)' : 'var(--green)'};font-weight:700">${fmtNum(q.depth)}</div>
+      </div>`).join('');
+  } catch (err) {
+    console.error('SQS error:', err);
+  }
+}
+
+// ─── Cold Starts Chart (from function data) ──────────────────────────────────
+async function loadColdStarts() {
+  try {
+    const d = await apiPost('/api/lambda-functions');
+    const fns = (d.functions || []).filter(f => f.coldStartMs > 0).slice(0, 7);
+    if (!fns.length) return;
+    const labels = fns.map(f => f.name.length > 14 ? f.name.slice(0, 14) + '…' : f.name);
+    if (charts.cold) charts.cold.destroy();
+    charts.cold = new Chart(document.getElementById('coldChart'), {
+      type: 'bar',
+      data: { labels, datasets: [{ label: 'Init ms', data: fns.map(f => f.coldStartMs), backgroundColor: '#9b6ef5', borderRadius: 4 }] },
+      options: { ...chartOpts(), indexAxis: 'y' }
+    });
+  } catch (err) { console.error('Cold start chart error:', err); }
+}
+
+// ─── Chart defaults ──────────────────────────────────────────────────────────
+function chartOpts() {
+  return {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { font: { size: 10 }, color: '#5a5e72', maxTicksLimit: 6 }, grid: { color: 'rgba(255,255,255,.04)' } },
+      y: { ticks: { font: { size: 10 }, color: '#5a5e72' }, grid: { color: 'rgba(255,255,255,.04)' } }
+    }
+  };
+}
+
+// ─── Utils ──────────────────────────────────────────────────────────────────
+function fmtNum(n) {
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
+  if (n >= 1_000) return (n / 1_000).toFixed(1) + 'k';
+  return String(n);
+}
+</script>
+</body>
+</html>
