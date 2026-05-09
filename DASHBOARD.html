@@ -324,6 +324,7 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
           <div class="metric-card m-green"><div class="metric-label"><i class="ti ti-bolt"></i> Invocations</div><div class="metric-value" id="m-invoc">—</div><div class="metric-delta delta-up">24h total</div></div>
           <div class="metric-card m-blue"><div class="metric-label"><i class="ti ti-clock"></i> Avg Duration</div><div class="metric-value" id="m-dur">—</div><div class="metric-delta delta-neutral">average</div></div>
           <div class="metric-card m-red"><div class="metric-label"><i class="ti ti-circle-x"></i> Error Rate</div><div class="metric-value" id="m-err">—</div><div class="metric-delta" id="m-err-d"></div></div>
+          <div id="serviceHealth" style="margin-top:8px"></div>
           <div class="metric-card m-blue"><div class="metric-label"><i class="ti ti-api"></i> API p99 Latency</div><div class="metric-value" id="m-lat">—</div><div class="metric-delta delta-neutral">p99</div></div>
           <div class="metric-card m-amber"><div class="metric-label"><i class="ti ti-database"></i> DDB Reads</div><div class="metric-value" id="m-rcu">—</div><div class="metric-delta delta-neutral" id="m-rcu-d">RCU consumed</div></div>
           <div class="metric-card m-purple"><div class="metric-label"><i class="ti ti-messages"></i> SQS Depth</div><div class="metric-value" id="m-sqs">—</div><div class="metric-delta" id="m-sqs-d"></div></div>
@@ -411,7 +412,9 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
         <div class="page-header"><h2><i class="ti ti-bucket" style="color:var(--red)"></i> S3 Buckets</h2><p>All S3 buckets in your account</p></div>
         <div class="card">
           <div class="card-header"><span class="card-title">All Buckets</span><span class="card-action" onclick="loadS3Page()">↻ refresh</span></div>
-          <div id="s3TableWrap"><div class="state-msg"><i class="ti ti-bucket" style="font-size:28px;display:block;margin-bottom:8px;opacity:.4"></i>Connect AWS to view S3 buckets</div></div>
+          <div id="s3TableWrap">
+    <div id="s3Buckets"></div>
+  </div>
         </div>
       </div>
 
@@ -615,6 +618,20 @@ async function loadMetrics() {
     document.getElementById('m-invoc').textContent=fmtNum(d.invocations.value);
     document.getElementById('m-dur').textContent=d.duration.avg+'ms';
     document.getElementById('m-err').textContent=d.errors.rate+'%';
+    const health = getHealthStatus(d.errors.rate);
+
+document.getElementById('serviceHealth').innerHTML = `
+<div style="
+    background:${health.color};
+    padding:6px 12px;
+    border-radius:20px;
+    color:white;
+    font-weight:bold;
+    display:inline-block;
+">
+    ${health.label}
+</div>
+`;
     document.getElementById('m-err-d').className='metric-delta '+(d.errors.rate>2?'delta-dn':'delta-up');
     document.getElementById('m-err-d').textContent=d.errors.value+' errors';
     document.getElementById('m-lat').textContent=d.apiLatencyP99.value+'ms';
@@ -746,9 +763,39 @@ async function loadDDBPage() {
 }
 async function loadS3Page() {
   try {
-    const d=await apiPost('/api/s3'); const buckets=d.buckets||[];
-    document.getElementById('s3TableWrap').innerHTML=buckets.length?`<table class="fn-table"><thead><tr><th>Bucket Name</th><th>Region</th><th>Created</th></tr></thead><tbody>${buckets.map(b=>`<tr><td style="color:var(--text);font-weight:600"><i class="ti ti-bucket" style="color:var(--red);margin-right:6px"></i>${b.name}</td><td style="color:var(--text3)">${b.region||creds.region}</td><td style="color:var(--text3)">${b.createdAt?new Date(b.createdAt).toLocaleDateString():'—'}</td></tr>`).join('')}</tbody></table>`:'<div class="state-msg">No S3 buckets found</div>';
-  } catch(e){console.error('S3Page:',e);}
+
+    const res = await fetch('/api/s3');
+    const buckets = await res.json();
+
+    document.getElementById('s3TableWrap').innerHTML =
+      buckets.length
+      ? buckets.map(bucket => `
+          <div style="
+              padding:12px;
+              margin-bottom:10px;
+              border:1px solid rgba(255,255,255,0.1);
+              border-radius:10px;
+              background:#111827;
+          ">
+              <h3 style="color:#22c55e">
+                  ${bucket.Name}
+              </h3>
+
+              <p style="
+                  color:#9ca3af;
+                  font-size:12px;
+              ">
+                  Created:
+                  ${new Date(bucket.CreationDate).toLocaleString()}
+              </p>
+          </div>
+      `).join('')
+
+      : '<div class="state-msg">No S3 buckets found</div>';
+
+  } catch(e) {
+    console.error('S3Page:', e);
+  }
 }
 async function loadSQSPage() {
   try {
@@ -1068,6 +1115,26 @@ function downloadFile(content, filename, mimeType) {
 function chartOpts(){return{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},color:'#5a5e72',maxTicksLimit:6},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{font:{size:10},color:'#5a5e72'},grid:{color:'rgba(255,255,255,.04)'}}}};}
 
 // ── Utils ──
+function getHealthStatus(errorRate) {
+    if (errorRate < 1) {
+        return {
+            label: "Healthy",
+            color: "#22c55e"
+        };
+    }
+
+    if (errorRate < 5) {
+        return {
+            label: "Warning",
+            color: "#f59e0b"
+        };
+    }
+
+    return {
+        label: "Critical",
+        color: "#ef4444"
+    };
+}
 function fmtNum(n){if(n>=1_000_000)return(n/1_000_000).toFixed(1)+'M';if(n>=1_000)return(n/1_000).toFixed(1)+'k';return String(n);}
 function fmtBytes(b){if(b>=1e9)return(b/1e9).toFixed(1)+' GB';if(b>=1e6)return(b/1e6).toFixed(1)+' MB';if(b>=1e3)return(b/1e3).toFixed(1)+' KB';return b+' B';}
 </script>
