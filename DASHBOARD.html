@@ -1,3 +1,4 @@
+cat > /mnt/user-data/outputs/dashboard.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,8 +25,6 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
 .topbar{padding:14px 20px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0}
 .content{flex:1;overflow-y:auto;padding:18px 20px}
-
-/* Sidebar */
 .logo{padding:0 16px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);margin-bottom:16px}
 .logo-icon{width:34px;height:34px;background:linear-gradient(135deg,#1fcc8a,#0e9e68);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;flex-shrink:0}
 .logo-name{font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--text)}
@@ -38,11 +37,8 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
 .nav-item.active::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:2px;background:var(--green);border-radius:2px}
 .nav-item i{font-size:16px;width:18px;text-align:center}
 .nav-badge{margin-left:auto;font-size:10px;font-weight:700;padding:1px 6px;border-radius:20px}
-.badge-red{background:var(--red-dim);color:var(--red)}
-.badge-green{background:var(--green-dim);color:var(--green)}
+.badge-red{background:var(--red-dim);color:var(--red)}.badge-green{background:var(--green-dim);color:var(--green)}
 .sidebar-footer{margin-top:auto;padding:0 10px 0;border-top:1px solid var(--border);padding-top:12px}
-
-/* Topbar */
 .topbar-left{flex:1;display:flex;align-items:center;gap:10px}
 .conn-indicator{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text2)}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--text3);flex-shrink:0}
@@ -50,20 +46,19 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
 @keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(31,204,138,.2)}50%{box-shadow:0 0 0 6px rgba(31,204,138,.05)}}
 .region-tag{font-size:11px;color:var(--text3);background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:3px 10px}
 .topbar-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg3);color:var(--text2);cursor:pointer;font-size:12px;font-family:inherit;transition:all .15s}
+.topbar-btn:hover{background:var(--bg);color:var(--text)}
 .topbar-btn.primary{background:var(--green);color:#000;border-color:transparent;font-weight:600}
+.topbar-btn.primary:hover{background:#25e09a}
 .topbar-btn.connected{border-color:var(--green);color:var(--green)}
+.topbar-btn.export-btn{border-color:var(--blue);color:var(--blue);background:var(--blue-dim)}
+.topbar-btn.export-btn:hover{background:var(--blue);color:#fff}
 .auto-refresh-label{font-size:11px;color:var(--text3)}
-
-/* Page sections */
 .page{display:none}.page.active{display:block}
-
-/* Cards */
 .metrics-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px}
 .metric-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;position:relative;overflow:hidden}
 .metric-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:var(--radius) var(--radius) 0 0}
 .metric-card.m-green::before{background:var(--green)}.metric-card.m-amber::before{background:var(--amber)}
-.metric-card.m-red::before{background:var(--red)}.metric-card.m-blue::before{background:var(--blue)}
-.metric-card.m-purple::before{background:var(--purple)}
+.metric-card.m-red::before{background:var(--red)}.metric-card.m-blue::before{background:var(--blue)}.metric-card.m-purple::before{background:var(--purple)}
 .metric-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;gap:5px}
 .metric-value{font-size:24px;font-weight:700;color:var(--text);letter-spacing:-.02em;line-height:1;margin-bottom:6px}
 .metric-delta{font-size:11px}.delta-up{color:var(--green)}.delta-dn{color:var(--red)}.delta-neutral{color:var(--text3)}
@@ -74,8 +69,6 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
 .card-title{font-size:12px;font-weight:600;color:var(--text);letter-spacing:.04em;text-transform:uppercase}
 .card-action{font-size:11px;color:var(--text3);cursor:pointer;padding:3px 8px;border:1px solid var(--border);border-radius:var(--radius-sm);transition:all .15s}
 .card-action:hover{color:var(--text);border-color:var(--border2)}
-
-/* Service Health */
 .svc-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
 .svc-row:last-child{border-bottom:none;padding-bottom:0}
 .svc-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
@@ -83,8 +76,6 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
 .health-bar{height:3px;background:var(--bg3);border-radius:2px;margin-top:5px;overflow:hidden}
 .health-fill{height:100%;border-radius:2px;transition:width .6s ease}
 .svc-stat{text-align:right;font-size:11px}
-
-/* Log stream */
 .log-stream{font-size:11px;font-family:'SF Mono','Fira Code',monospace}
 .log-entry{display:flex;align-items:flex-start;gap:8px;padding:6px 8px;border-radius:5px;margin-bottom:3px}
 .log-entry.error{background:rgba(240,78,78,.08);border-left:2px solid var(--red)}
@@ -95,60 +86,43 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
 .log-entry.error .log-level{color:var(--red)}.log-entry.warn .log-level{color:var(--amber)}.log-entry.info .log-level{color:var(--text3)}
 .log-msg{color:var(--text2);word-break:break-all}
 .log-empty{color:var(--text3);text-align:center;padding:20px}
-
-/* Alert banner */
 .alert-banner{display:none;align-items:center;gap:8px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:var(--amber);margin-bottom:14px}
 .alert-banner.show{display:flex}
-
-/* Function table */
 .fn-table{width:100%;border-collapse:collapse;font-size:11px}
 .fn-table th{color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:6px 8px;text-align:left;border-bottom:1px solid var(--border)}
 .fn-table td{padding:8px 8px;border-bottom:1px solid var(--border);color:var(--text2)}
 .fn-table tr:last-child td{border-bottom:none}.fn-table tr:hover td{background:var(--bg3)}
 .runtime-badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600;background:var(--blue-dim);color:var(--blue)}
-
-/* Page header */
 .page-header{margin-bottom:18px}
 .page-header h2{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px}
 .page-header p{font-size:12px;color:var(--text3)}
-
-/* Stats row */
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
 .stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px}
 .stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
 .stat-val{font-size:20px;font-weight:700;color:var(--text)}
 .stat-sub{font-size:11px;color:var(--text3);margin-top:3px}
-
-/* Alert list */
 .alert-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);margin-bottom:8px;border:1px solid}
 .alert-item.error{background:var(--red-dim);border-color:rgba(240,78,78,.2)}
 .alert-item.warn{background:var(--amber-dim);border-color:rgba(245,166,35,.2)}
 .alert-item.info{background:var(--bg3);border-color:var(--border)}
 .alert-icon{font-size:16px;flex-shrink:0;margin-top:1px}
 .alert-item.error .alert-icon{color:var(--red)}.alert-item.warn .alert-icon{color:var(--amber)}.alert-item.info .alert-icon{color:var(--blue)}
-.alert-body{flex:1}
-.alert-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px}
-.alert-detail{font-size:11px;color:var(--text3)}
-.alert-time{font-size:10px;color:var(--text3);flex-shrink:0}
-
-/* Settings */
+.alert-body{flex:1}.alert-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px}
+.alert-detail{font-size:11px;color:var(--text3)}.alert-time{font-size:10px;color:var(--text3);flex-shrink:0}
 .settings-section{margin-bottom:20px}
 .settings-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px}
 .settings-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
 .settings-row:last-child{border-bottom:none}
-.settings-label{font-size:13px;color:var(--text)}
-.settings-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.settings-label{font-size:13px;color:var(--text)}.settings-sub{font-size:11px;color:var(--text3);margin-top:2px}
 .settings-input{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:6px 10px;font-size:12px;color:var(--text);font-family:inherit;outline:none;width:160px}
 .settings-input:focus{border-color:var(--green)}
 .toggle{width:36px;height:20px;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;cursor:pointer;position:relative;transition:background .2s}
 .toggle.on{background:var(--green);border-color:var(--green)}
 .toggle::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;background:#fff;border-radius:50%;transition:left .2s}
 .toggle.on::after{left:18px}
-
-/* Modal */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:200}
 .modal-overlay.show{display:flex}
-.modal-box{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:28px;width:380px}
+.modal-box{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:28px;width:380px;max-width:94vw}
 .modal-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px}
 .modal-sub{font-size:12px;color:var(--text3);margin-bottom:22px;line-height:1.6}
 .field{margin-bottom:14px}
@@ -165,6 +139,38 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
 .state-msg{text-align:center;padding:28px;color:var(--text3);font-size:12px}
 .state-msg i{font-size:28px;display:block;margin-bottom:8px;opacity:.4}
 .chart-wrap{position:relative;width:100%}
+
+/* ── Export Modal Styles ── */
+.export-modal-box{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:28px;width:480px;max-width:94vw}
+.export-section{margin-bottom:20px}
+.export-section-title{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px}
+.export-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.export-option{padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg3);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px}
+.export-option:hover{border-color:var(--border2);background:var(--bg)}
+.export-option.selected{border-color:var(--green);background:var(--green-dim)}
+.export-option i{font-size:18px}
+.export-option.csv i{color:var(--green)}
+.export-option.pdf i{color:var(--red)}
+.export-option.json i{color:var(--amber)}
+.export-option.html i{color:var(--blue)}
+.export-opt-name{font-size:12px;font-weight:600;color:var(--text)}
+.export-opt-desc{font-size:10px;color:var(--text3);margin-top:1px}
+.export-checkboxes{display:flex;flex-direction:column;gap:8px}
+.export-check{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--radius-sm);background:var(--bg3);border:1px solid var(--border);cursor:pointer}
+.export-check:hover{border-color:var(--border2)}
+.export-check input[type=checkbox]{accent-color:var(--green);width:14px;height:14px;cursor:pointer}
+.export-check-label{font-size:12px;color:var(--text)}
+.export-check-sub{font-size:10px;color:var(--text3);margin-left:auto}
+.export-preview{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;font-size:10px;font-family:monospace;color:var(--text3);max-height:100px;overflow:hidden;line-height:1.8}
+.export-progress{display:none;text-align:center;padding:20px}
+.export-progress.show{display:block}
+.progress-bar{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin:10px 0}
+.progress-fill{height:100%;background:var(--green);border-radius:2px;transition:width .3s ease}
+.export-success{display:none;text-align:center;padding:16px}
+.export-success.show{display:block}
+.btn-export-csv{background:var(--green);color:#000}
+.btn-export-pdf{background:var(--red);color:#fff}
+
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:10px}
 </style>
 </head>
@@ -196,8 +202,77 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
   </div>
 </div>
 
+<!-- ── EXPORT MODAL ── -->
+<div class="modal-overlay" id="exportModal">
+  <div class="export-modal-box">
+    <p class="modal-title" style="display:flex;align-items:center;gap:8px"><i class="ti ti-download" style="color:var(--blue)"></i> Export Report</p>
+    <p class="modal-sub">Download your AWS metrics as a weekly engineering report</p>
+
+    <div id="exportForm">
+      <!-- Format selection -->
+      <div class="export-section">
+        <div class="export-section-title">Export Format</div>
+        <div class="export-options">
+          <div class="export-option csv selected" onclick="selectFormat('csv',this)">
+            <i class="ti ti-file-spreadsheet"></i>
+            <div><div class="export-opt-name">CSV</div><div class="export-opt-desc">Excel / Google Sheets</div></div>
+          </div>
+          <div class="export-option pdf" onclick="selectFormat('pdf',this)">
+            <i class="ti ti-file-type-pdf"></i>
+            <div><div class="export-opt-name">PDF Report</div><div class="export-opt-desc">Printable engineering report</div></div>
+          </div>
+          <div class="export-option json" onclick="selectFormat('json',this)">
+            <i class="ti ti-braces"></i>
+            <div><div class="export-opt-name">JSON</div><div class="export-opt-desc">Raw data / integrations</div></div>
+          </div>
+          <div class="export-option html" onclick="selectFormat('html',this)">
+            <i class="ti ti-world"></i>
+            <div><div class="export-opt-name">HTML Report</div><div class="export-opt-desc">Shareable web report</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data sections to include -->
+      <div class="export-section">
+        <div class="export-section-title">Include in Report</div>
+        <div class="export-checkboxes">
+          <label class="export-check"><input type="checkbox" id="exp-summary" checked/><span class="export-check-label"><i class="ti ti-chart-bar" style="color:var(--green);margin-right:6px"></i>Executive Summary</span><span class="export-check-sub">KPI overview</span></label>
+          <label class="export-check"><input type="checkbox" id="exp-lambda" checked/><span class="export-check-label"><i class="ti ti-bolt" style="color:var(--green);margin-right:6px"></i>Lambda Metrics</span><span class="export-check-sub">invocations, errors, duration</span></label>
+          <label class="export-check"><input type="checkbox" id="exp-dynamo" checked/><span class="export-check-label"><i class="ti ti-database" style="color:var(--amber);margin-right:6px"></i>DynamoDB Tables</span><span class="export-check-sub">RCU, WCU, item counts</span></label>
+          <label class="export-check"><input type="checkbox" id="exp-sqs" checked/><span class="export-check-label"><i class="ti ti-messages" style="color:var(--purple);margin-right:6px"></i>SQS Queue Depths</span><span class="export-check-sub">depths, DLQ status</span></label>
+          <label class="export-check"><input type="checkbox" id="exp-logs"/><span class="export-check-label"><i class="ti ti-file-text" style="color:var(--blue);margin-right:6px"></i>Recent Error Logs</span><span class="export-check-sub">last 20 error events</span></label>
+          <label class="export-check"><input type="checkbox" id="exp-health" checked/><span class="export-check-label"><i class="ti ti-heart-rate" style="color:var(--red);margin-right:6px"></i>Service Health</span><span class="export-check-sub">health status per service</span></label>
+        </div>
+      </div>
+
+      <!-- Report title -->
+      <div class="export-section">
+        <div class="export-section-title">Report Title</div>
+        <input class="settings-input" id="exp-title" style="width:100%" value="Weekly Engineering Report" placeholder="Weekly Engineering Report"/>
+      </div>
+    </div>
+
+    <!-- Progress bar (shown during export) -->
+    <div class="export-progress" id="exportProgress">
+      <div style="font-size:13px;color:var(--text2);margin-bottom:4px" id="exportProgressMsg">Gathering metrics…</div>
+      <div class="progress-bar"><div class="progress-fill" id="exportProgressFill" style="width:0%"></div></div>
+    </div>
+
+    <!-- Success message -->
+    <div class="export-success" id="exportSuccess">
+      <i class="ti ti-circle-check" style="font-size:36px;color:var(--green);display:block;margin-bottom:8px"></i>
+      <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Report downloaded!</div>
+      <div style="font-size:12px;color:var(--text3)" id="exportSuccessMsg">Check your downloads folder</div>
+    </div>
+
+    <div class="modal-actions" id="exportActions">
+      <button class="btn btn-cancel" onclick="closeExportModal()">Cancel</button>
+      <button class="btn btn-connect" id="exportRunBtn" onclick="runExport()"><i class="ti ti-download" style="margin-right:4px"></i> Download Report</button>
+    </div>
+  </div>
+</div>
+
 <div class="shell">
-  <!-- Sidebar -->
   <nav class="sidebar">
     <div class="logo">
       <div class="logo-icon"><i class="ti ti-topology-star-3"></i></div>
@@ -225,28 +300,26 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
     </div>
   </nav>
 
-  <!-- Main -->
   <div class="main">
     <div class="topbar">
       <div class="topbar-left">
-        <div class="conn-indicator">
-          <div class="dot" id="connDot"></div>
-          <span id="connLabel">Not connected</span>
-        </div>
+        <div class="conn-indicator"><div class="dot" id="connDot"></div><span id="connLabel">Not connected</span></div>
         <span class="region-tag" id="regionTag">—</span>
       </div>
       <span class="auto-refresh-label" id="refreshLabel"></span>
       <button class="topbar-btn" id="refreshBtn" onclick="refreshAll()" style="display:none"><i class="ti ti-refresh"></i></button>
+      <!-- ── EXPORT BUTTON ── -->
+      <button class="topbar-btn export-btn" id="exportBtn" onclick="openExportModal()" style="display:none" title="Export metrics report">
+        <i class="ti ti-download"></i> Export Report
+      </button>
       <button class="topbar-btn primary" id="awsBtn" onclick="openModal()"><i class="ti ti-plug-connected"></i> Connect AWS</button>
     </div>
 
     <div class="content">
 
-      <!-- ═══ OVERVIEW ═══ -->
+      <!-- OVERVIEW -->
       <div class="page active" id="page-overview">
-        <div class="alert-banner" id="alertBanner">
-          <i class="ti ti-alert-triangle"></i><span id="alertMsg"></span>
-        </div>
+        <div class="alert-banner" id="alertBanner"><i class="ti ti-alert-triangle"></i><span id="alertMsg"></span></div>
         <div class="metrics-grid">
           <div class="metric-card m-green"><div class="metric-label"><i class="ti ti-bolt"></i> Invocations</div><div class="metric-value" id="m-invoc">—</div><div class="metric-delta delta-up">24h total</div></div>
           <div class="metric-card m-blue"><div class="metric-label"><i class="ti ti-clock"></i> Avg Duration</div><div class="metric-value" id="m-dur">—</div><div class="metric-delta delta-neutral">average</div></div>
@@ -280,7 +353,7 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
         </div>
       </div>
 
-      <!-- ═══ LAMBDA ═══ -->
+      <!-- LAMBDA -->
       <div class="page" id="page-lambda">
         <div class="page-header"><h2><i class="ti ti-bolt" style="color:var(--green)"></i> Lambda Functions</h2><p>All Lambda functions in your AWS account with runtime metrics</p></div>
         <div class="stats-row">
@@ -295,11 +368,11 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
         </div>
         <div class="section-row" style="margin-top:14px">
           <div class="card"><div class="card-header"><span class="card-title">Invocations Over Time</span></div><div class="chart-wrap" style="height:180px"><canvas id="lambdaInvocChart"></canvas></div></div>
-          <div class="card"><div class="card-header"><span class="card-title">Cold Start Distribution</span></div><div class="chart-wrap" style="height:180px"><canvas id="lambdaColdChart"></canvas></div></div>
+          <div class="card"><div class="card-header"><span class="card-title">Error Trend</span></div><div class="chart-wrap" style="height:180px"><canvas id="lambdaColdChart"></canvas></div></div>
         </div>
       </div>
 
-      <!-- ═══ API GATEWAY ═══ -->
+      <!-- API GATEWAY -->
       <div class="page" id="page-apigateway">
         <div class="page-header"><h2><i class="ti ti-api" style="color:var(--blue)"></i> API Gateway</h2><p>REST APIs and HTTP APIs with latency and error tracking</p></div>
         <div class="stats-row">
@@ -314,7 +387,7 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
         </div>
       </div>
 
-      <!-- ═══ DYNAMODB ═══ -->
+      <!-- DYNAMODB -->
       <div class="page" id="page-dynamodb">
         <div class="page-header"><h2><i class="ti ti-database" style="color:var(--amber)"></i> DynamoDB</h2><p>Table capacity, item counts, and throttling metrics</p></div>
         <div class="stats-row">
@@ -333,7 +406,7 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
         </div>
       </div>
 
-      <!-- ═══ S3 ═══ -->
+      <!-- S3 -->
       <div class="page" id="page-s3">
         <div class="page-header"><h2><i class="ti ti-bucket" style="color:var(--red)"></i> S3 Buckets</h2><p>All S3 buckets in your account</p></div>
         <div class="card">
@@ -342,7 +415,7 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
         </div>
       </div>
 
-      <!-- ═══ SQS/SNS ═══ -->
+      <!-- SQS -->
       <div class="page" id="page-sqs">
         <div class="page-header"><h2><i class="ti ti-messages" style="color:var(--purple)"></i> SQS / SNS</h2><p>Queue depths, DLQ alerts, and SNS topics</p></div>
         <div class="stats-row">
@@ -357,7 +430,7 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
         </div>
       </div>
 
-      <!-- ═══ CLOUDWATCH LOGS ═══ -->
+      <!-- LOGS -->
       <div class="page" id="page-logs">
         <div class="page-header"><h2><i class="ti ti-file-text" style="color:var(--green)"></i> CloudWatch Logs</h2><p>Live log stream from all Lambda log groups</p></div>
         <div class="card" style="margin-bottom:14px">
@@ -379,7 +452,7 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
         </div>
       </div>
 
-      <!-- ═══ METRICS ═══ -->
+      <!-- METRICS -->
       <div class="page" id="page-metrics">
         <div class="page-header"><h2><i class="ti ti-chart-line" style="color:var(--blue)"></i> Metrics</h2><p>Detailed CloudWatch metrics across all services</p></div>
         <div class="section-row">
@@ -392,7 +465,7 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
         </div>
       </div>
 
-      <!-- ═══ X-RAY TRACES ═══ -->
+      <!-- TRACES -->
       <div class="page" id="page-traces">
         <div class="page-header"><h2><i class="ti ti-git-branch" style="color:var(--purple)"></i> X-Ray Traces</h2><p>Distributed tracing for your serverless application</p></div>
         <div class="card">
@@ -400,21 +473,17 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
             <i class="ti ti-git-branch" style="font-size:40px;color:var(--purple);opacity:.5;display:block;margin-bottom:12px"></i>
             <p style="color:var(--text2);font-size:13px;margin-bottom:8px">Enable X-Ray tracing on your Lambda functions to see distributed traces here</p>
             <p style="color:var(--text3);font-size:11px">AWS Console → Lambda → Configuration → Monitoring → Enable X-Ray Active Tracing</p>
-            <div style="margin-top:16px;padding:12px;background:var(--bg3);border-radius:var(--radius-sm);text-align:left;font-size:11px;color:var(--text3)">
-              <div style="margin-bottom:4px;color:var(--text2)">Quick enable via CLI:</div>
-              <code style="color:var(--green)">aws lambda update-function-configuration --function-name YOUR_FUNCTION --tracing-config Mode=Active</code>
-            </div>
           </div>
         </div>
       </div>
 
-      <!-- ═══ ALERTS ═══ -->
+      <!-- ALERTS -->
       <div class="page" id="page-alerts">
         <div class="page-header"><h2><i class="ti ti-bell" style="color:var(--red)"></i> Alerts</h2><p>Recent error events and threshold violations</p></div>
         <div id="alertsPanel"><div class="state-msg"><i class="ti ti-bell" style="font-size:28px;display:block;margin-bottom:8px;opacity:.4"></i>No alerts yet — connect AWS to start monitoring</div></div>
       </div>
 
-      <!-- ═══ SETTINGS ═══ -->
+      <!-- SETTINGS -->
       <div class="page" id="page-settings">
         <div class="page-header"><h2><i class="ti ti-settings" style="color:var(--text2)"></i> Settings</h2><p>Configure your dashboard preferences</p></div>
         <div class="card">
@@ -446,27 +515,16 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
         </div>
       </div>
 
-      <!-- ═══ DOCS ═══ -->
+      <!-- DOCS -->
       <div class="page" id="page-docs">
         <div class="page-header"><h2><i class="ti ti-help-circle" style="color:var(--blue)"></i> Docs</h2><p>How to use ServerlessOps</p></div>
         <div class="card" style="margin-bottom:14px">
           <div class="card-header"><span class="card-title">Quick Start</span></div>
           <div style="font-size:12px;color:var(--text2);line-height:2">
-            <div style="margin-bottom:10px"><span style="color:var(--green);font-weight:700">1.</span> Make sure your backend is running: <code style="background:var(--bg3);padding:2px 6px;border-radius:3px;color:var(--green)">node server.js</code></div>
+            <div style="margin-bottom:10px"><span style="color:var(--green);font-weight:700">1.</span> Run backend: <code style="background:var(--bg3);padding:2px 6px;border-radius:3px;color:var(--green)">node server.js</code></div>
             <div style="margin-bottom:10px"><span style="color:var(--green);font-weight:700">2.</span> Click <strong style="color:var(--text)">Connect AWS</strong> and enter your IAM credentials</div>
             <div style="margin-bottom:10px"><span style="color:var(--green);font-weight:700">3.</span> Generate traffic: <code style="background:var(--bg3);padding:2px 6px;border-radius:3px;color:var(--green)">node load-test.js</code></div>
-            <div style="margin-bottom:10px"><span style="color:var(--green);font-weight:700">4.</span> Watch metrics update every 60 seconds automatically</div>
-          </div>
-        </div>
-        <div class="card" style="margin-bottom:14px">
-          <div class="card-header"><span class="card-title">Required IAM Permissions</span></div>
-          <div style="font-size:11px;color:var(--text3);line-height:2">
-            <div>• <code style="color:var(--blue)">lambda:ListFunctions</code>, <code style="color:var(--blue)">lambda:InvokeFunction</code></div>
-            <div>• <code style="color:var(--blue)">cloudwatch:GetMetricData</code>, <code style="color:var(--blue)">cloudwatch:ListMetrics</code></div>
-            <div>• <code style="color:var(--blue)">logs:FilterLogEvents</code>, <code style="color:var(--blue)">logs:DescribeLogGroups</code></div>
-            <div>• <code style="color:var(--blue)">dynamodb:ListTables</code>, <code style="color:var(--blue)">dynamodb:DescribeTable</code></div>
-            <div>• <code style="color:var(--blue)">sqs:ListQueues</code>, <code style="color:var(--blue)">sqs:GetQueueAttributes</code></div>
-            <div>• <code style="color:var(--blue)">s3:ListAllMyBuckets</code></div>
+            <div style="margin-bottom:10px"><span style="color:var(--green);font-weight:700">4.</span> Click <strong style="color:var(--blue)">Export Report</strong> in the topbar to download CSV or PDF</div>
           </div>
         </div>
         <div class="card">
@@ -474,458 +532,545 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
           <div style="font-size:12px;line-height:2.2">
             <div><a href="https://console.aws.amazon.com/lambda" target="_blank" style="color:var(--blue)">→ AWS Lambda Console</a></div>
             <div><a href="https://console.aws.amazon.com/cloudwatch" target="_blank" style="color:var(--blue)">→ CloudWatch Console</a></div>
-            <div><a href="https://console.aws.amazon.com/iam" target="_blank" style="color:var(--blue)">→ IAM Console</a></div>
             <div><a href="https://github.com/raju1810-as/serverless-ops" target="_blank" style="color:var(--blue)">→ Your GitHub Repo</a></div>
           </div>
         </div>
       </div>
 
-    </div><!-- /content -->
-  </div><!-- /main -->
-</div><!-- /shell -->
+    </div>
+  </div>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-// ─── Config ─────────────────────────────────────────────────────────────────
 let API = 'http://localhost:3001';
-let creds = null;
-let refreshTimer = null;
-let charts = {};
+let creds = null, refreshTimer = null, charts = {};
 const REFRESH_INTERVAL = 60;
 
-// ─── Navigation ──────────────────────────────────────────────────────────────
+// ── Cached data for export ──
+let exportCache = { metrics: null, functions: null, dynamo: null, sqs: null, logs: null, health: null };
+
+// ── Navigation ──
 document.querySelectorAll('.nav-item[data-page]').forEach(item => {
   item.addEventListener('click', () => {
     const page = item.dataset.page;
-    // Update active nav
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     item.classList.add('active');
-    // Show page
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-' + page).classList.add('active');
-    // Load page-specific data if connected
     if (creds) loadPageData(page);
   });
 });
-
 function loadPageData(page) {
-  switch(page) {
-    case 'overview': refreshAll(); break;
-    case 'lambda': loadLambdaPage(); break;
-    case 'apigateway': loadAPIPage(); break;
-    case 'dynamodb': loadDDBPage(); break;
-    case 's3': loadS3Page(); break;
-    case 'sqs': loadSQSPage(); break;
-    case 'logs': loadLogsPage(); break;
-    case 'metrics': loadMetricsPage(); break;
-    case 'alerts': loadAlertsPage(); break;
+  const m = { overview:refreshAll, lambda:loadLambdaPage, apigateway:loadAPIPage, dynamodb:loadDDBPage, s3:loadS3Page, sqs:loadSQSPage, logs:loadLogsPage, metrics:loadMetricsPage, alerts:loadAlertsPage };
+  if (m[page]) m[page]();
+}
+
+// ── Modal ──
+function openModal() { document.getElementById('modal').classList.add('show'); }
+function closeModal() { document.getElementById('modal').classList.remove('show'); }
+async function doConnect() {
+  const akid=document.getElementById('akid').value.trim(), sak=document.getElementById('sak').value.trim();
+  const region=document.getElementById('region').value, token=document.getElementById('token').value.trim();
+  if (!akid||!sak) { showModalError('Access Key ID and Secret Key are required.'); return; }
+  document.getElementById('modalError').classList.remove('show');
+  const btn = document.getElementById('connectBtn'); btn.textContent='Connecting…'; btn.disabled=true;
+  try {
+    const res = await fetch(`${API}/api/connect`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accessKeyId:akid,secretAccessKey:sak,region,sessionToken:token||undefined})});
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error||'Authentication failed');
+    creds={accessKeyId:akid,secretAccessKey:sak,region,sessionToken:token||undefined};
+    closeModal(); setConnected(region); await refreshAll(); startAutoRefresh();
+  } catch(err) { showModalError(err.message); }
+  finally { btn.textContent='Connect ↗'; btn.disabled=false; }
+}
+function showModalError(msg) { const e=document.getElementById('modalError'); e.textContent='✗ '+msg; e.classList.add('show'); }
+function setConnected(region) {
+  document.getElementById('connDot').className='dot live';
+  document.getElementById('connLabel').textContent='Live';
+  document.getElementById('regionTag').textContent=region;
+  const btn=document.getElementById('awsBtn'); btn.innerHTML='✓ Connected'; btn.classList.remove('primary'); btn.classList.add('connected');
+  document.getElementById('refreshBtn').style.display='flex';
+  document.getElementById('exportBtn').style.display='flex';
+}
+function startAutoRefresh() {
+  if (refreshTimer) clearInterval(refreshTimer);
+  let cd=REFRESH_INTERVAL; updateRL(cd);
+  refreshTimer=setInterval(()=>{ cd--; if(cd<=0){cd=REFRESH_INTERVAL;refreshAll();} updateRL(cd); },1000);
+}
+function updateRL(s) { document.getElementById('refreshLabel').textContent=`Auto-refresh in ${s}s`; }
+async function apiPost(ep,extra={}) {
+  const r=await fetch(`${API}${ep}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...creds,...extra})});
+  if(!r.ok) throw new Error('HTTP '+r.status); return r.json();
+}
+async function refreshAll() {
+  if (!creds) return;
+  await Promise.allSettled([loadMetrics(),loadServiceHealth(),loadInvocChart(),loadLogs(),loadFunctions(),loadDynamoDB(),loadSQS()]);
+}
+
+// ── Overview loaders ──
+async function loadMetrics() {
+  try {
+    const d=await apiPost('/api/metrics'); exportCache.metrics=d;
+    document.getElementById('m-invoc').textContent=fmtNum(d.invocations.value);
+    document.getElementById('m-dur').textContent=d.duration.avg+'ms';
+    document.getElementById('m-err').textContent=d.errors.rate+'%';
+    document.getElementById('m-err-d').className='metric-delta '+(d.errors.rate>2?'delta-dn':'delta-up');
+    document.getElementById('m-err-d').textContent=d.errors.value+' errors';
+    document.getElementById('m-lat').textContent=d.apiLatencyP99.value+'ms';
+    document.getElementById('m-rcu').textContent=fmtNum(d.ddbRcu.value);
+    document.getElementById('m-rcu-d').textContent='WCU: '+fmtNum(d.ddbWcu.value);
+  } catch(e){console.error('Metrics:',e);}
+}
+async function loadServiceHealth() {
+  try {
+    const d=await apiPost('/api/service-health'); exportCache.health=d;
+    const icons={lambda:'ti-bolt',dynamodb:'ti-database',sqs:'ti-messages',apigateway:'ti-api'};
+    const colors={lambda:'#1fcc8a',dynamodb:'#f5a623',sqs:'#9b6ef5',apigateway:'#4d8ef0'};
+    const labels={lambda:'Lambda',dynamodb:'DynamoDB',sqs:'SQS / SNS',apigateway:'API Gateway'};
+    document.getElementById('healthPanel').innerHTML=d.health.map(h=>{
+      const ok=h.status==='ok', color=ok?(colors[h.name]||'#1fcc8a'):'#f04e4e';
+      return `<div class="svc-row"><div class="svc-icon" style="background:${color}22;color:${color}"><i class="ti ${icons[h.name]||'ti-server'}"></i></div>
+        <div class="svc-info"><div class="svc-name">${labels[h.name]||h.name}</div><div class="svc-meta">${ok?(h.count??0)+' resources':'Error accessing service'}</div>
+        <div class="health-bar"><div class="health-fill" style="width:${ok?99:30}%;background:${color}"></div></div></div>
+        <div class="svc-stat" style="color:${color}">${ok?'✓ OK':'✗ ERR'}</div></div>`;
+    }).join('');
+    const lh=d.health.find(h=>h.name==='lambda');
+    if(lh?.count) document.getElementById('fnBadge').textContent=lh.count;
+  } catch(e){console.error('Health:',e);}
+}
+async function loadInvocChart() {
+  try {
+    const d=await apiPost('/api/invocations-chart');
+    const labels=(d.timestamps||[]).map(t=>new Date(t).getHours().toString().padStart(2,'0')+':00');
+    if(charts.invoc)charts.invoc.destroy();
+    charts.invoc=new Chart(document.getElementById('invocChart'),{type:'line',data:{labels,datasets:[
+      {label:'Invocations',data:d.invocations,borderColor:'#1fcc8a',backgroundColor:'rgba(31,204,138,.06)',borderWidth:1.5,pointRadius:0,tension:.4,fill:true},
+      {label:'Errors',data:d.errors,borderColor:'#f04e4e',backgroundColor:'rgba(240,78,78,.06)',borderWidth:1.5,pointRadius:0,tension:.4,fill:true}
+    ]},options:chartOpts()});
+  } catch(e){console.error('InvocChart:',e);}
+}
+async function loadDynamoDB() {
+  try {
+    const d=await apiPost('/api/dynamodb'); exportCache.dynamo=d;
+    const tables=d.tables||[];
+    const labels=tables.map(t=>t.name.length>12?t.name.slice(0,12)+'…':t.name);
+    if(charts.ddb)charts.ddb.destroy();
+    charts.ddb=new Chart(document.getElementById('ddbChart'),{type:'bar',data:{labels,datasets:[
+      {label:'RCU',data:tables.map(t=>t.rcuConsumed),backgroundColor:'#4d8ef0',borderRadius:3},
+      {label:'WCU',data:tables.map(t=>t.wcuConsumed),backgroundColor:'#f5a623',borderRadius:3}
+    ]},options:chartOpts()});
+  } catch(e){console.error('DDB:',e);}
+}
+async function loadSQS() {
+  try {
+    const d=await apiPost('/api/sqs'); exportCache.sqs=d;
+    const queues=d.queues||[];
+    const dlqMsgs=queues.filter(q=>q.isDLQ).reduce((a,q)=>a+q.depth,0);
+    const totalDepth=queues.reduce((a,q)=>a+q.depth,0);
+    document.getElementById('m-sqs').textContent=fmtNum(totalDepth);
+    document.getElementById('m-sqs-d').textContent=`DLQ: ${dlqMsgs} msgs`;
+    document.getElementById('m-sqs-d').className='metric-delta '+(dlqMsgs>0?'delta-dn':'delta-up');
+    const dlqCount=queues.filter(q=>q.isDLQ&&q.depth>0).length;
+    if(dlqCount>0) document.getElementById('sqsBadge').textContent=dlqCount;
+    document.getElementById('sqsPanel').innerHTML=queues.length
+      ?queues.map(q=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:11px">
+        <div style="flex:1;overflow:hidden"><div style="color:${q.isDLQ?'var(--red)':'var(--text)'};font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${q.name}</div><div style="color:var(--text3)">${q.inFlight} in-flight</div></div>
+        <div style="color:${q.depth>100?'var(--red)':q.depth>10?'var(--amber)':'var(--green)'};font-weight:700">${fmtNum(q.depth)}</div></div>`).join('')
+      :'<div class="state-msg" style="padding:20px 0">No queues found</div>';
+  } catch(e){console.error('SQS:',e);}
+}
+async function loadLogs() {
+  try {
+    const d=await apiPost('/api/logs'); exportCache.logs=d;
+    const stream=document.getElementById('logStream');
+    if(!d.events?.length){stream.innerHTML='<div class="log-empty">No recent log events found</div>';return;}
+    const errors=d.events.filter(e=>e.level==='error').length;
+    if(errors>0){document.getElementById('alertBanner').classList.add('show');document.getElementById('alertMsg').textContent=`${errors} error event${errors>1?'s':''} detected`;document.getElementById('alertBadge').style.display='inline';document.getElementById('alertBadge').textContent=errors;}
+    stream.innerHTML=d.events.map(e=>`<div class="log-entry ${e.level}"><span class="log-time">${new Date(e.timestamp).toTimeString().slice(0,8)}</span><span class="log-level">${e.level.toUpperCase()}</span><span class="log-msg">[${(e.logGroup||'').split('/').pop()}] ${e.message}</span></div>`).join('');
+  } catch(e){console.error('Logs:',e);}
+}
+async function loadFunctions() {
+  try {
+    const d=await apiPost('/api/lambda-functions'); exportCache.functions=d;
+    const wrap=document.getElementById('fnTableWrap');
+    if(!d.functions?.length){wrap.innerHTML='<div class="state-msg">No Lambda functions found</div>';return;}
+    document.getElementById('fnBadge').textContent=d.functions.length;
+    wrap.innerHTML=`<table class="fn-table"><thead><tr><th>Function</th><th>Runtime</th><th>Memory</th><th>Timeout</th><th>Cold Start</th><th>Last Modified</th></tr></thead>
+      <tbody>${d.functions.map(fn=>`<tr><td style="color:var(--text);font-weight:600">${fn.name}</td><td><span class="runtime-badge">${fn.runtime||'—'}</span></td><td>${fn.memory??'—'} MB</td><td>${fn.timeout??'—'}s</td><td style="color:${fn.coldStartMs>500?'var(--amber)':'var(--green)'}">${fn.coldStartMs?fn.coldStartMs+'ms':'—'}</td><td style="color:var(--text3)">${fn.lastModified?new Date(fn.lastModified).toLocaleDateString():'—'}</td></tr>`).join('')}</tbody></table>`;
+  } catch(e){console.error('Functions:',e);}
+}
+
+// ── Sub-page loaders ──
+async function loadLambdaPage() {
+  try {
+    const [funcs,chart]=await Promise.allSettled([apiPost('/api/lambda-functions'),apiPost('/api/invocations-chart')]);
+    if(funcs.status==='fulfilled'){
+      const fns=funcs.value.functions||[];
+      document.getElementById('lam-total').textContent=fns.length;
+      document.getElementById('lam-invoc').textContent=fmtNum(fns.reduce((a,f)=>a+(f.invocations||0),0));
+      const ti=fns.reduce((a,f)=>a+(f.invocations||0),0), te=fns.reduce((a,f)=>a+(f.errors||0),0);
+      document.getElementById('lam-err').textContent=ti>0?((te/ti)*100).toFixed(2)+'%':'0%';
+      document.getElementById('lam-dur').textContent=fns.length?Math.round(fns.reduce((a,f)=>a+(f.avgDuration||0),0)/fns.length)+'ms':'—';
+      document.getElementById('lambdaTableWrap').innerHTML=fns.length?`<table class="fn-table"><thead><tr><th>Function</th><th>Runtime</th><th>Memory</th><th>Invocations</th><th>Errors</th><th>Avg Duration</th><th>Last Modified</th></tr></thead><tbody>${fns.map(fn=>`<tr><td style="color:var(--text);font-weight:600">${fn.name}</td><td><span class="runtime-badge">${fn.runtime||'—'}</span></td><td>${fn.memory??'—'} MB</td><td style="color:var(--green)">${fmtNum(fn.invocations||0)}</td><td style="color:${(fn.errors||0)>0?'var(--red)':'var(--green)'}">${fn.errors||0}</td><td>${fn.avgDuration?fn.avgDuration+'ms':'—'}</td><td style="color:var(--text3)">${fn.lastModified?new Date(fn.lastModified).toLocaleDateString():'—'}</td></tr>`).join('')}</tbody></table>`:'<div class="state-msg">No Lambda functions found</div>';
+    }
+    if(chart.status==='fulfilled'){
+      const d=chart.value; const labels=(d.timestamps||[]).map(t=>new Date(t).getHours().toString().padStart(2,'0')+':00');
+      if(charts.lambdaInvoc)charts.lambdaInvoc.destroy();
+      charts.lambdaInvoc=new Chart(document.getElementById('lambdaInvocChart'),{type:'line',data:{labels,datasets:[{label:'Invocations',data:d.invocations,borderColor:'#1fcc8a',backgroundColor:'rgba(31,204,138,.06)',borderWidth:1.5,pointRadius:0,tension:.4,fill:true}]},options:chartOpts()});
+      if(charts.lambdaCold)charts.lambdaCold.destroy();
+      charts.lambdaCold=new Chart(document.getElementById('lambdaColdChart'),{type:'line',data:{labels,datasets:[{label:'Errors',data:d.errors,borderColor:'#f04e4e',backgroundColor:'rgba(240,78,78,.06)',borderWidth:1.5,pointRadius:0,tension:.4,fill:true}]},options:chartOpts()});
+    }
+  } catch(e){console.error('LambdaPage:',e);}
+}
+async function loadAPIPage() {
+  try {
+    const d=await apiPost('/api/service-health'); const apiH=d.health.find(h=>h.name==='apigateway');
+    document.getElementById('api-total').textContent=apiH?.count??'0';
+    document.getElementById('api-reqs').textContent='—';
+    document.getElementById('api-lat').textContent=document.getElementById('m-lat').textContent;
+    document.getElementById('api-5xx').textContent='—';
+    document.getElementById('apiTableWrap').innerHTML=`<div style="padding:16px;text-align:center;color:var(--text3);font-size:12px"><i class="ti ti-api" style="font-size:28px;display:block;margin-bottom:8px;color:var(--blue);opacity:.6"></i>Found <strong style="color:var(--text)">${apiH?.count??0} API${(apiH?.count??0)!==1?'s':''}</strong> in ${creds.region}<br><br><a href="https://console.aws.amazon.com/apigateway" target="_blank" style="color:var(--blue)">View in AWS Console →</a></div>`;
+  } catch(e){console.error('APIPage:',e);}
+}
+async function loadDDBPage() {
+  try {
+    const d=await apiPost('/api/dynamodb'); const tables=d.tables||[];
+    document.getElementById('ddb-total').textContent=tables.length;
+    document.getElementById('ddb-rcu').textContent=fmtNum(tables.reduce((a,t)=>a+(t.rcuConsumed||0),0));
+    document.getElementById('ddb-wcu').textContent=fmtNum(tables.reduce((a,t)=>a+(t.wcuConsumed||0),0));
+    document.getElementById('ddb-throttle').textContent=tables.reduce((a,t)=>a+(t.throttled||0),0);
+    document.getElementById('ddbTableWrap').innerHTML=tables.length?`<table class="fn-table"><thead><tr><th>Table</th><th>Status</th><th>Items</th><th>Size</th><th>RCU</th><th>WCU</th></tr></thead><tbody>${tables.map(t=>`<tr><td style="color:var(--text);font-weight:600">${t.name}</td><td style="color:var(--green)">${t.status||'ACTIVE'}</td><td>${fmtNum(t.itemCount||0)}</td><td>${t.sizeBytes?fmtBytes(t.sizeBytes):'—'}</td><td style="color:var(--blue)">${t.rcuConsumed||0}</td><td style="color:var(--amber)">${t.wcuConsumed||0}</td></tr>`).join('')}</tbody></table>`:'<div class="state-msg">No DynamoDB tables found</div>';
+    if(tables.length){const labels=tables.map(t=>t.name.length>10?t.name.slice(0,10)+'…':t.name);if(charts.ddbDetail)charts.ddbDetail.destroy();charts.ddbDetail=new Chart(document.getElementById('ddbDetailChart'),{type:'bar',data:{labels,datasets:[{label:'RCU',data:tables.map(t=>t.rcuConsumed||0),backgroundColor:'#4d8ef0',borderRadius:3},{label:'WCU',data:tables.map(t=>t.wcuConsumed||0),backgroundColor:'#f5a623',borderRadius:3}]},options:chartOpts()});}
+  } catch(e){console.error('DDBPage:',e);}
+}
+async function loadS3Page() {
+  try {
+    const d=await apiPost('/api/s3'); const buckets=d.buckets||[];
+    document.getElementById('s3TableWrap').innerHTML=buckets.length?`<table class="fn-table"><thead><tr><th>Bucket Name</th><th>Region</th><th>Created</th></tr></thead><tbody>${buckets.map(b=>`<tr><td style="color:var(--text);font-weight:600"><i class="ti ti-bucket" style="color:var(--red);margin-right:6px"></i>${b.name}</td><td style="color:var(--text3)">${b.region||creds.region}</td><td style="color:var(--text3)">${b.createdAt?new Date(b.createdAt).toLocaleDateString():'—'}</td></tr>`).join('')}</tbody></table>`:'<div class="state-msg">No S3 buckets found</div>';
+  } catch(e){console.error('S3Page:',e);}
+}
+async function loadSQSPage() {
+  try {
+    const d=await apiPost('/api/sqs'); const queues=d.queues||[];
+    document.getElementById('sqs-total').textContent=queues.length;
+    document.getElementById('sqs-depth').textContent=fmtNum(queues.reduce((a,q)=>a+q.depth,0));
+    document.getElementById('sqs-dlq').textContent=fmtNum(queues.filter(q=>q.isDLQ).reduce((a,q)=>a+q.depth,0));
+    document.getElementById('sqs-flight').textContent=fmtNum(queues.reduce((a,q)=>a+q.inFlight,0));
+    document.getElementById('sqsFullPanel').innerHTML=queues.length?`<table class="fn-table"><thead><tr><th>Queue</th><th>Type</th><th>Depth</th><th>In-Flight</th><th>Delayed</th></tr></thead><tbody>${queues.map(q=>`<tr><td style="color:${q.isDLQ?'var(--red)':'var(--text)'};font-weight:600">${q.name}${q.isDLQ?' <span style="color:var(--red);font-size:10px">[DLQ]</span>':''}</td><td style="color:var(--text3)">${q.isDLQ?'Dead Letter':'Standard'}</td><td style="color:${q.depth>100?'var(--red)':q.depth>10?'var(--amber)':'var(--green)'};font-weight:700">${fmtNum(q.depth)}</td><td>${q.inFlight}</td><td>${q.delayed||0}</td></tr>`).join('')}</tbody></table>`:'<div class="state-msg">No SQS queues found</div>';
+  } catch(e){console.error('SQSPage:',e);}
+}
+async function loadLogsPage() {
+  try {
+    const d=await apiPost('/api/logs'); const stream=document.getElementById('fullLogStream');
+    const filter=document.getElementById('logFilter').value; let events=d.events||[];
+    if(filter!=='all') events=events.filter(e=>e.level===filter);
+    stream.innerHTML=events.length?events.map(e=>`<div class="log-entry ${e.level}"><span class="log-time">${new Date(e.timestamp).toTimeString().slice(0,8)}</span><span class="log-level">${e.level.toUpperCase()}</span><span class="log-msg">[${(e.logGroup||'').split('/').pop()}] ${e.message}</span></div>`).join(''):'<div class="log-empty">No log events found</div>';
+  } catch(e){console.error('LogsPage:',e);}
+}
+document.getElementById('logFilter').addEventListener('change',()=>{if(creds)loadLogsPage();});
+async function loadMetricsPage() {
+  try {
+    const d=await apiPost('/api/invocations-chart');
+    const labels=(d.timestamps||[]).map(t=>new Date(t).getHours().toString().padStart(2,'0')+':00');
+    const mk=(id,data,color,label)=>{if(charts[id])charts[id].destroy();charts[id]=new Chart(document.getElementById(id),{type:'line',data:{labels,datasets:[{label,data,borderColor:color,backgroundColor:color+'11',borderWidth:1.5,pointRadius:0,tension:.4,fill:true}]},options:chartOpts()});};
+    mk('metricsInvocChart',d.invocations,'#1fcc8a','Invocations');
+    mk('metricsErrChart',d.errors,'#f04e4e','Errors');
+    mk('metricsDurChart',d.invocations,'#4d8ef0','Duration');
+    const dd=await apiPost('/api/dynamodb');const tables=dd.tables||[];
+    if(charts.metricsCap)charts.metricsCap.destroy();
+    charts.metricsCap=new Chart(document.getElementById('metricsCapChart'),{type:'bar',data:{labels:tables.map(t=>t.name.slice(0,10)),datasets:[{label:'RCU',data:tables.map(t=>t.rcuConsumed||0),backgroundColor:'#4d8ef0',borderRadius:3},{label:'WCU',data:tables.map(t=>t.wcuConsumed||0),backgroundColor:'#f5a623',borderRadius:3}]},options:chartOpts()});
+  } catch(e){console.error('MetricsPage:',e);}
+}
+async function loadAlertsPage() {
+  try {
+    const d=await apiPost('/api/logs'); const events=(d.events||[]).filter(e=>e.level==='error'||e.level==='warn');
+    document.getElementById('alertsPanel').innerHTML=events.length?events.map(e=>`<div class="alert-item ${e.level}"><i class="ti ${e.level==='error'?'ti-alert-circle':'ti-alert-triangle'} alert-icon"></i><div class="alert-body"><div class="alert-title">${e.level==='error'?'Error':'Warning'} in ${(e.logGroup||'').split('/').pop()||'Lambda'}</div><div class="alert-detail">${e.message||''}</div></div><div class="alert-time">${new Date(e.timestamp).toTimeString().slice(0,8)}</div></div>`).join(''):'<div class="state-msg"><i class="ti ti-check" style="font-size:28px;display:block;margin-bottom:8px;opacity:.4;color:var(--green)"></i>No alerts — all systems healthy</div>';
+  } catch(e){console.error('AlertsPage:',e);}
+}
+function updateAPI(val){API=val;}
+function saveSettings(){API=document.getElementById('setting-api').value;alert('Settings saved!');}
+
+// ════════════════════════════════════════════════
+// ── EXPORT REPORT FEATURE ──
+// ════════════════════════════════════════════════
+let selectedFormat = 'csv';
+
+function openExportModal() {
+  // Reset modal state
+  document.getElementById('exportForm').style.display='block';
+  document.getElementById('exportProgress').classList.remove('show');
+  document.getElementById('exportSuccess').classList.remove('show');
+  document.getElementById('exportActions').style.display='flex';
+  document.getElementById('exportProgressFill').style.width='0%';
+  document.getElementById('exportModal').classList.add('show');
+}
+function closeExportModal() { document.getElementById('exportModal').classList.remove('show'); }
+
+function selectFormat(fmt, el) {
+  selectedFormat = fmt;
+  document.querySelectorAll('.export-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+async function runExport() {
+  const title = document.getElementById('exp-title').value || 'Weekly Engineering Report';
+  const include = {
+    summary: document.getElementById('exp-summary').checked,
+    lambda:  document.getElementById('exp-lambda').checked,
+    dynamo:  document.getElementById('exp-dynamo').checked,
+    sqs:     document.getElementById('exp-sqs').checked,
+    logs:    document.getElementById('exp-logs').checked,
+    health:  document.getElementById('exp-health').checked,
+  };
+
+  // Show progress
+  document.getElementById('exportForm').style.display='none';
+  document.getElementById('exportActions').style.display='none';
+  document.getElementById('exportProgress').classList.add('show');
+
+  try {
+    // Step 1 — fetch fresh data if not cached
+    await setProgress('Gathering metrics…', 10);
+    if (!exportCache.metrics) exportCache.metrics = await apiPost('/api/metrics');
+    await setProgress('Loading Lambda functions…', 30);
+    if (!exportCache.functions) exportCache.functions = await apiPost('/api/lambda-functions');
+    await setProgress('Loading DynamoDB tables…', 50);
+    if (!exportCache.dynamo) exportCache.dynamo = await apiPost('/api/dynamodb');
+    await setProgress('Loading SQS queues…', 65);
+    if (!exportCache.sqs) exportCache.sqs = await apiPost('/api/sqs');
+    if (include.logs) {
+      await setProgress('Fetching recent logs…', 80);
+      if (!exportCache.logs) exportCache.logs = await apiPost('/api/logs');
+    }
+    await setProgress('Generating report…', 90);
+
+    const now = new Date();
+    const dateStr = now.toISOString().slice(0,10);
+    const filename = `serverlessops-report-${dateStr}`;
+
+    if (selectedFormat === 'csv') exportCSV(title, include, filename);
+    else if (selectedFormat === 'json') exportJSON(title, include, filename);
+    else if (selectedFormat === 'pdf') exportPDF(title, include, filename);
+    else if (selectedFormat === 'html') exportHTML(title, include, filename);
+
+    await setProgress('Done!', 100);
+    await delay(400);
+    document.getElementById('exportProgress').classList.remove('show');
+    document.getElementById('exportSuccess').classList.add('show');
+    document.getElementById('exportSuccessMsg').textContent = `${filename}.${selectedFormat === 'pdf' ? 'html' : selectedFormat} saved to downloads`;
+
+  } catch(err) {
+    console.error('Export error:', err);
+    document.getElementById('exportProgress').classList.remove('show');
+    document.getElementById('exportForm').style.display='block';
+    document.getElementById('exportActions').style.display='flex';
+    alert('Export failed: ' + err.message);
   }
 }
 
-// ─── Modal ───────────────────────────────────────────────────────────────────
-function openModal() { document.getElementById('modal').classList.add('show'); }
-function closeModal() { document.getElementById('modal').classList.remove('show'); }
+function setProgress(msg, pct) {
+  document.getElementById('exportProgressMsg').textContent = msg;
+  document.getElementById('exportProgressFill').style.width = pct + '%';
+  return delay(200);
+}
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-async function doConnect() {
-  const akid = document.getElementById('akid').value.trim();
-  const sak = document.getElementById('sak').value.trim();
-  const region = document.getElementById('region').value;
-  const token = document.getElementById('token').value.trim();
-  if (!akid || !sak) { showModalError('Access Key ID and Secret Key are required.'); return; }
-  document.getElementById('modalError').classList.remove('show');
-  const btn = document.getElementById('connectBtn');
-  btn.textContent = 'Connecting…'; btn.disabled = true;
-  try {
-    const res = await fetch(`${API}/api/connect`, {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ accessKeyId:akid, secretAccessKey:sak, region, sessionToken:token||undefined }),
+// ── CSV Export ──
+function exportCSV(title, include, filename) {
+  const rows = [];
+  const now = new Date().toLocaleString();
+  rows.push([`"${title}"`, `"Generated: ${now}"`, `"Region: ${creds?.region||'—'}"`]);
+  rows.push([]);
+
+  if (include.summary && exportCache.metrics) {
+    const m = exportCache.metrics;
+    rows.push(['"=== EXECUTIVE SUMMARY ==="']);
+    rows.push(['"Metric"','"Value"','"Period"']);
+    rows.push(['"Lambda Invocations"', m.invocations.value, '"24h"']);
+    rows.push(['"Lambda Error Count"', m.errors.value, '"24h"']);
+    rows.push(['"Lambda Error Rate"', m.errors.rate+'%', '"24h"']);
+    rows.push(['"Avg Lambda Duration"', m.duration.avg+'ms', '"24h"']);
+    rows.push(['"API Gateway p99 Latency"', m.apiLatencyP99.value+'ms', '"24h"']);
+    rows.push(['"DynamoDB RCU Consumed"', m.ddbRcu.value, '"24h"']);
+    rows.push(['"DynamoDB WCU Consumed"', m.ddbWcu.value, '"24h"']);
+    rows.push([]);
+  }
+
+  if (include.lambda && exportCache.functions?.functions?.length) {
+    rows.push(['"=== LAMBDA FUNCTIONS ==="']);
+    rows.push(['"Function Name"','"Runtime"','"Memory (MB)"','"Timeout (s)"','"Cold Start (ms)"','"Last Modified"']);
+    exportCache.functions.functions.forEach(fn => {
+      rows.push([`"${fn.name}"`, `"${fn.runtime||'—'}"`, fn.memory||'—', fn.timeout||'—', fn.coldStartMs||0, `"${fn.lastModified?new Date(fn.lastModified).toLocaleDateString():'—'}"`]);
     });
-    const data = await res.json();
-    if (!data.ok) throw new Error(data.error || 'Authentication failed');
-    creds = { accessKeyId:akid, secretAccessKey:sak, region, sessionToken:token||undefined };
-    closeModal();
-    setConnected(region);
-    await refreshAll();
-    startAutoRefresh();
-  } catch (err) { showModalError(err.message); }
-  finally { btn.textContent = 'Connect ↗'; btn.disabled = false; }
-}
+    rows.push([]);
+  }
 
-function showModalError(msg) {
-  const el = document.getElementById('modalError');
-  el.textContent = '✗ ' + msg; el.classList.add('show');
-}
-
-function setConnected(region) {
-  document.getElementById('connDot').className = 'dot live';
-  document.getElementById('connLabel').textContent = 'Live';
-  document.getElementById('regionTag').textContent = region;
-  const btn = document.getElementById('awsBtn');
-  btn.innerHTML = '✓ Connected'; btn.classList.remove('primary'); btn.classList.add('connected');
-  document.getElementById('refreshBtn').style.display = 'flex';
-}
-
-// ─── Auto Refresh ─────────────────────────────────────────────────────────────
-function startAutoRefresh() {
-  if (refreshTimer) clearInterval(refreshTimer);
-  let countdown = REFRESH_INTERVAL;
-  updateRefreshLabel(countdown);
-  refreshTimer = setInterval(() => {
-    countdown--;
-    if (countdown <= 0) { countdown = REFRESH_INTERVAL; refreshAll(); }
-    updateRefreshLabel(countdown);
-  }, 1000);
-}
-function updateRefreshLabel(s) { document.getElementById('refreshLabel').textContent = `Auto-refresh in ${s}s`; }
-
-// ─── API Helper ───────────────────────────────────────────────────────────────
-async function apiPost(endpoint, extra = {}) {
-  const res = await fetch(`${API}${endpoint}`, {
-    method: 'POST', headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({ ...creds, ...extra }),
-  });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.json();
-}
-
-// ─── Refresh All (Overview) ───────────────────────────────────────────────────
-async function refreshAll() {
-  if (!creds) return;
-  await Promise.allSettled([loadMetrics(), loadServiceHealth(), loadInvocChart(), loadLogs(), loadFunctions(), loadDynamoDB(), loadSQS()]);
-}
-
-// ─── Overview: Metrics ────────────────────────────────────────────────────────
-async function loadMetrics() {
-  try {
-    const d = await apiPost('/api/metrics');
-    document.getElementById('m-invoc').textContent = fmtNum(d.invocations.value);
-    document.getElementById('m-dur').textContent = d.duration.avg + 'ms';
-    document.getElementById('m-err').textContent = d.errors.rate + '%';
-    document.getElementById('m-err-d').className = 'metric-delta ' + (d.errors.rate > 2 ? 'delta-dn' : 'delta-up');
-    document.getElementById('m-err-d').textContent = d.errors.value + ' errors';
-    document.getElementById('m-lat').textContent = d.apiLatencyP99.value + 'ms';
-    document.getElementById('m-rcu').textContent = fmtNum(d.ddbRcu.value);
-    document.getElementById('m-rcu-d').textContent = 'WCU: ' + fmtNum(d.ddbWcu.value);
-  } catch(e) { console.error('Metrics:', e); }
-}
-
-// ─── Overview: Service Health ─────────────────────────────────────────────────
-async function loadServiceHealth() {
-  try {
-    const d = await apiPost('/api/service-health');
-    const icons = {lambda:'ti-bolt',dynamodb:'ti-database',sqs:'ti-messages',apigateway:'ti-api'};
-    const colors = {lambda:'#1fcc8a',dynamodb:'#f5a623',sqs:'#9b6ef5',apigateway:'#4d8ef0'};
-    const labels = {lambda:'Lambda',dynamodb:'DynamoDB',sqs:'SQS / SNS',apigateway:'API Gateway'};
-    document.getElementById('healthPanel').innerHTML = d.health.map(h => {
-      const ok = h.status === 'ok';
-      const color = ok ? (colors[h.name]||'#1fcc8a') : '#f04e4e';
-      return `<div class="svc-row">
-        <div class="svc-icon" style="background:${color}22;color:${color}"><i class="ti ${icons[h.name]||'ti-server'}"></i></div>
-        <div class="svc-info">
-          <div class="svc-name">${labels[h.name]||h.name}</div>
-          <div class="svc-meta">${ok ? (h.count??0)+' resources' : 'Error accessing service'}</div>
-          <div class="health-bar"><div class="health-fill" style="width:${ok?99:30}%;background:${color}"></div></div>
-        </div>
-        <div class="svc-stat" style="color:${color}">${ok?'✓ OK':'✗ ERR'}</div>
-      </div>`;
-    }).join('');
-    const lh = d.health.find(h => h.name === 'lambda');
-    if (lh?.count) document.getElementById('fnBadge').textContent = lh.count;
-  } catch(e) { console.error('Health:', e); }
-}
-
-// ─── Overview: Charts ─────────────────────────────────────────────────────────
-async function loadInvocChart() {
-  try {
-    const d = await apiPost('/api/invocations-chart');
-    const labels = (d.timestamps||[]).map(t => new Date(t).getHours().toString().padStart(2,'0')+':00');
-    if (charts.invoc) charts.invoc.destroy();
-    charts.invoc = new Chart(document.getElementById('invocChart'), {
-      type:'line', data:{labels, datasets:[
-        {label:'Invocations',data:d.invocations,borderColor:'#1fcc8a',backgroundColor:'rgba(31,204,138,.06)',borderWidth:1.5,pointRadius:0,tension:.4,fill:true},
-        {label:'Errors',data:d.errors,borderColor:'#f04e4e',backgroundColor:'rgba(240,78,78,.06)',borderWidth:1.5,pointRadius:0,tension:.4,fill:true}
-      ]}, options: chartOpts()
+  if (include.dynamo && exportCache.dynamo?.tables?.length) {
+    rows.push(['"=== DYNAMODB TABLES ==="']);
+    rows.push(['"Table Name"','"Status"','"Item Count"','"Size"','"RCU Consumed"','"WCU Consumed"']);
+    exportCache.dynamo.tables.forEach(t => {
+      rows.push([`"${t.name}"`, `"${t.status||'ACTIVE'}"`, t.itemCount||0, `"${t.sizeBytes?fmtBytes(t.sizeBytes):'—'}"`, t.rcuConsumed||0, t.wcuConsumed||0]);
     });
-  } catch(e) { console.error('InvocChart:', e); }
-}
+    rows.push([]);
+  }
 
-async function loadDynamoDB() {
-  try {
-    const d = await apiPost('/api/dynamodb');
-    const tables = d.tables||[];
-    const labels = tables.map(t => t.name.length>12 ? t.name.slice(0,12)+'…' : t.name);
-    if (charts.ddb) charts.ddb.destroy();
-    charts.ddb = new Chart(document.getElementById('ddbChart'), {
-      type:'bar', data:{labels, datasets:[
-        {label:'RCU',data:tables.map(t=>t.rcuConsumed),backgroundColor:'#4d8ef0',borderRadius:3},
-        {label:'WCU',data:tables.map(t=>t.wcuConsumed),backgroundColor:'#f5a623',borderRadius:3}
-      ]}, options: chartOpts()
+  if (include.sqs && exportCache.sqs?.queues?.length) {
+    rows.push(['"=== SQS QUEUES ==="']);
+    rows.push(['"Queue Name"','"Type"','"Depth"','"In-Flight"','"Delayed"','"DLQ?"']);
+    exportCache.sqs.queues.forEach(q => {
+      rows.push([`"${q.name}"`, `"${q.isDLQ?'Dead Letter':'Standard'}"`, q.depth, q.inFlight, q.delayed||0, `"${q.isDLQ?'YES':'NO'}"`]);
     });
-  } catch(e) { console.error('DDB:', e); }
+    rows.push([]);
+  }
+
+  if (include.health && exportCache.health?.health?.length) {
+    rows.push(['"=== SERVICE HEALTH ==="']);
+    rows.push(['"Service"','"Status"','"Resources"']);
+    exportCache.health.health.forEach(h => {
+      rows.push([`"${h.name}"`, `"${h.status?.toUpperCase()}"`, h.count||0]);
+    });
+    rows.push([]);
+  }
+
+  if (include.logs && exportCache.logs?.events?.length) {
+    rows.push(['"=== RECENT ERROR LOGS ==="']);
+    rows.push(['"Timestamp"','"Level"','"Log Group"','"Message"']);
+    exportCache.logs.events.filter(e=>e.level==='error').slice(0,20).forEach(e => {
+      const ts = new Date(e.timestamp).toLocaleString();
+      const grp = (e.logGroup||'').split('/').pop();
+      const msg = (e.message||'').replace(/"/g,"'");
+      rows.push([`"${ts}"`, `"${e.level.toUpperCase()}"`, `"${grp}"`, `"${msg}"`]);
+    });
+  }
+
+  const csv = rows.map(r => r.join(',')).join('\n');
+  downloadFile(csv, filename+'.csv', 'text/csv');
 }
 
-async function loadSQS() {
-  try {
-    const d = await apiPost('/api/sqs');
-    const queues = d.queues||[];
-    const dlqMsgs = queues.filter(q=>q.isDLQ).reduce((a,q)=>a+q.depth,0);
-    const totalDepth = queues.reduce((a,q)=>a+q.depth,0);
-    document.getElementById('m-sqs').textContent = fmtNum(totalDepth);
-    document.getElementById('m-sqs-d').textContent = `DLQ: ${dlqMsgs} msgs`;
-    document.getElementById('m-sqs-d').className = 'metric-delta ' + (dlqMsgs>0?'delta-dn':'delta-up');
-    const dlqCount = queues.filter(q=>q.isDLQ&&q.depth>0).length;
-    if (dlqCount>0) document.getElementById('sqsBadge').textContent = dlqCount;
-    document.getElementById('sqsPanel').innerHTML = queues.length
-      ? queues.map(q=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:11px">
-          <div style="flex:1;overflow:hidden"><div style="color:${q.isDLQ?'var(--red)':'var(--text)'};font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${q.name}</div><div style="color:var(--text3)">${q.inFlight} in-flight</div></div>
-          <div style="color:${q.depth>100?'var(--red)':q.depth>10?'var(--amber)':'var(--green)'};font-weight:700">${fmtNum(q.depth)}</div>
-        </div>`).join('')
-      : '<div class="state-msg" style="padding:20px 0">No queues found</div>';
-  } catch(e) { console.error('SQS:', e); }
+// ── JSON Export ──
+function exportJSON(title, include, filename) {
+  const report = {
+    title, generatedAt: new Date().toISOString(), region: creds?.region||'—',
+    data: {}
+  };
+  if (include.summary && exportCache.metrics) report.data.metrics = exportCache.metrics;
+  if (include.lambda && exportCache.functions) report.data.lambda = exportCache.functions;
+  if (include.dynamo && exportCache.dynamo) report.data.dynamodb = exportCache.dynamo;
+  if (include.sqs && exportCache.sqs) report.data.sqs = exportCache.sqs;
+  if (include.logs && exportCache.logs) report.data.logs = exportCache.logs;
+  if (include.health && exportCache.health) report.data.health = exportCache.health;
+  downloadFile(JSON.stringify(report, null, 2), filename+'.json', 'application/json');
 }
 
-// ─── Overview: Logs ───────────────────────────────────────────────────────────
-async function loadLogs() {
-  try {
-    const d = await apiPost('/api/logs');
-    const stream = document.getElementById('logStream');
-    if (!d.events?.length) { stream.innerHTML='<div class="log-empty">No recent log events found</div>'; return; }
-    const errors = d.events.filter(e=>e.level==='error').length;
-    if (errors>0) {
-      document.getElementById('alertBanner').classList.add('show');
-      document.getElementById('alertMsg').textContent = `${errors} error event${errors>1?'s':''} detected in the last hour — check log stream below`;
-      document.getElementById('alertBadge').style.display='inline';
-      document.getElementById('alertBadge').textContent=errors;
-    }
-    stream.innerHTML = d.events.map(e=>`<div class="log-entry ${e.level}">
-      <span class="log-time">${new Date(e.timestamp).toTimeString().slice(0,8)}</span>
-      <span class="log-level">${e.level.toUpperCase()}</span>
-      <span class="log-msg">[${(e.logGroup||'').split('/').pop()}] ${e.message}</span>
-    </div>`).join('');
-  } catch(e) { console.error('Logs:', e); }
+// ── HTML Report Export ──
+function exportHTML(title, include, filename) {
+  const now = new Date().toLocaleString();
+  const m = exportCache.metrics;
+  const fns = exportCache.functions?.functions || [];
+  const tables = exportCache.dynamo?.tables || [];
+  const queues = exportCache.sqs?.queues || [];
+  const health = exportCache.health?.health || [];
+  const logs = exportCache.logs?.events?.filter(e=>e.level==='error').slice(0,20) || [];
+
+  const kpiCards = include.summary && m ? `
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Lambda Invocations</div><div class="kpi-val green">${fmtNum(m.invocations.value)}</div><div class="kpi-sub">24h total</div></div>
+      <div class="kpi"><div class="kpi-label">Error Rate</div><div class="kpi-val ${m.errors.rate>2?'red':'green'}">${m.errors.rate}%</div><div class="kpi-sub">${m.errors.value} errors</div></div>
+      <div class="kpi"><div class="kpi-label">Avg Duration</div><div class="kpi-val blue">${m.duration.avg}ms</div><div class="kpi-sub">average</div></div>
+      <div class="kpi"><div class="kpi-label">API p99 Latency</div><div class="kpi-val blue">${m.apiLatencyP99.value}ms</div><div class="kpi-sub">p99</div></div>
+      <div class="kpi"><div class="kpi-label">DDB RCU</div><div class="kpi-val amber">${fmtNum(m.ddbRcu.value)}</div><div class="kpi-sub">consumed</div></div>
+      <div class="kpi"><div class="kpi-label">DDB WCU</div><div class="kpi-val amber">${fmtNum(m.ddbWcu.value)}</div><div class="kpi-sub">consumed</div></div>
+    </div>` : '';
+
+  const lambdaSection = include.lambda && fns.length ? `
+    <h2>Lambda Functions</h2>
+    <table><thead><tr><th>Function</th><th>Runtime</th><th>Memory</th><th>Cold Start</th><th>Last Modified</th></tr></thead>
+    <tbody>${fns.map(fn=>`<tr><td><strong>${fn.name}</strong></td><td>${fn.runtime||'—'}</td><td>${fn.memory||'—'} MB</td><td>${fn.coldStartMs?fn.coldStartMs+'ms':'—'}</td><td>${fn.lastModified?new Date(fn.lastModified).toLocaleDateString():'—'}</td></tr>`).join('')}</tbody></table>` : '';
+
+  const dynamoSection = include.dynamo && tables.length ? `
+    <h2>DynamoDB Tables</h2>
+    <table><thead><tr><th>Table</th><th>Status</th><th>Items</th><th>RCU</th><th>WCU</th></tr></thead>
+    <tbody>${tables.map(t=>`<tr><td><strong>${t.name}</strong></td><td><span class="badge green">${t.status||'ACTIVE'}</span></td><td>${fmtNum(t.itemCount||0)}</td><td>${t.rcuConsumed||0}</td><td>${t.wcuConsumed||0}</td></tr>`).join('')}</tbody></table>` : '';
+
+  const sqsSection = include.sqs && queues.length ? `
+    <h2>SQS Queues</h2>
+    <table><thead><tr><th>Queue</th><th>Type</th><th>Depth</th><th>In-Flight</th></tr></thead>
+    <tbody>${queues.map(q=>`<tr><td><strong>${q.name}</strong></td><td>${q.isDLQ?'<span class="badge red">DLQ</span>':'Standard'}</td><td><span class="${q.depth>100?'badge red':q.depth>10?'badge amber':''}">${fmtNum(q.depth)}</span></td><td>${q.inFlight}</td></tr>`).join('')}</tbody></table>` : '';
+
+  const healthSection = include.health && health.length ? `
+    <h2>Service Health</h2>
+    <table><thead><tr><th>Service</th><th>Status</th><th>Resources</th></tr></thead>
+    <tbody>${health.map(h=>`<tr><td><strong>${h.name}</strong></td><td><span class="badge ${h.status==='ok'?'green':'red'}">${h.status?.toUpperCase()}</span></td><td>${h.count||0}</td></tr>`).join('')}</tbody></table>` : '';
+
+  const logsSection = include.logs && logs.length ? `
+    <h2>Recent Errors</h2>
+    <table><thead><tr><th>Time</th><th>Function</th><th>Message</th></tr></thead>
+    <tbody>${logs.map(e=>`<tr><td>${new Date(e.timestamp).toTimeString().slice(0,8)}</td><td>${(e.logGroup||'').split('/').pop()}</td><td style="font-size:11px">${e.message||''}</td></tr>`).join('')}</tbody></table>` : '';
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title>
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:960px;margin:0 auto;padding:32px 24px;color:#1a1a2e;background:#f8f9fc}
+    .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;padding-bottom:20px;border-bottom:2px solid #e2e8f0}
+    .header-left h1{font-size:22px;font-weight:700;color:#0f172a;margin-bottom:4px}
+    .header-left p{font-size:12px;color:#64748b}
+    .region-badge{background:#0f172a;color:#1fcc8a;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;font-family:monospace}
+    h2{font-size:14px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.08em;margin:28px 0 12px;padding-bottom:8px;border-bottom:1px solid #e2e8f0}
+    .kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:8px}
+    .kpi{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+    .kpi-label{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+    .kpi-val{font-size:26px;font-weight:700;line-height:1;margin-bottom:4px}
+    .kpi-val.green{color:#059669}.kpi-val.red{color:#dc2626}.kpi-val.blue{color:#2563eb}.kpi-val.amber{color:#d97706}
+    .kpi-sub{font-size:11px;color:#94a3b8}
+    table{width:100%;border-collapse:collapse;font-size:12px;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04);margin-bottom:8px}
+    th{background:#f1f5f9;color:#475569;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:10px 12px;text-align:left;border-bottom:1px solid #e2e8f0}
+    td{padding:10px 12px;border-bottom:1px solid #f1f5f9;color:#374151}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:#f8fafc}
+    .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700}
+    .badge.green{background:#d1fae5;color:#065f46}.badge.red{background:#fee2e2;color:#991b1b}.badge.amber{background:#fef3c7;color:#92400e}
+    .footer{margin-top:40px;padding-top:16px;border-top:1px solid #e2e8f0;font-size:11px;color:#94a3b8;text-align:center}
+  </style></head><body>
+  <div class="header">
+    <div class="header-left"><h1>${title}</h1><p>Generated ${now}</p></div>
+    <span class="region-badge">${creds?.region||'—'}</span>
+  </div>
+  ${kpiCards}${lambdaSection}${dynamoSection}${sqsSection}${healthSection}${logsSection}
+  <div class="footer">Generated by ServerlessOps Observability Dashboard · ${now}</div>
+  </body></html>`;
+
+  downloadFile(html, filename+'.html', 'text/html');
 }
 
-// ─── Overview: Function Table ─────────────────────────────────────────────────
-async function loadFunctions() {
-  try {
-    const d = await apiPost('/api/lambda-functions');
-    const wrap = document.getElementById('fnTableWrap');
-    if (!d.functions?.length) { wrap.innerHTML='<div class="state-msg">No Lambda functions found</div>'; return; }
-    document.getElementById('fnBadge').textContent = d.functions.length;
-    wrap.innerHTML = `<table class="fn-table"><thead><tr><th>Function</th><th>Runtime</th><th>Memory</th><th>Timeout</th><th>Cold Start</th><th>Last Modified</th></tr></thead>
-      <tbody>${d.functions.map(fn=>`<tr>
-        <td style="color:var(--text);font-weight:600">${fn.name}</td>
-        <td><span class="runtime-badge">${fn.runtime||'—'}</span></td>
-        <td>${fn.memory??'—'} MB</td><td>${fn.timeout??'—'}s</td>
-        <td style="color:${fn.coldStartMs>500?'var(--amber)':'var(--green)'}">${fn.coldStartMs?fn.coldStartMs+'ms':'—'}</td>
-        <td style="color:var(--text3)">${fn.lastModified?new Date(fn.lastModified).toLocaleDateString():'—'}</td>
-      </tr>`).join('')}</tbody></table>`;
-  } catch(e) { console.error('Functions:', e); }
+// ── PDF Export (print-to-PDF via HTML) ──
+function exportPDF(title, include, filename) {
+  // We generate the HTML report and open it in a new window for browser print-to-PDF
+  exportHTML(title, include, filename);
+  // Also open a print preview
+  setTimeout(() => {
+    const printInfo = `\n\n💡 Tip: To save as PDF, open the downloaded HTML file in your browser and press Ctrl+P (or Cmd+P on Mac) → "Save as PDF"`;
+    document.getElementById('exportSuccessMsg').textContent = `${filename}.html downloaded. Open it and press Ctrl+P → Save as PDF`;
+  }, 500);
 }
 
-// ─── Lambda Page ──────────────────────────────────────────────────────────────
-async function loadLambdaPage() {
-  try {
-    const [funcs, chart] = await Promise.allSettled([apiPost('/api/lambda-functions'), apiPost('/api/invocations-chart')]);
-    if (funcs.status==='fulfilled') {
-      const d = funcs.value; const fns = d.functions||[];
-      document.getElementById('lam-total').textContent = fns.length;
-      document.getElementById('lam-invoc').textContent = fmtNum(fns.reduce((a,f)=>a+(f.invocations||0),0));
-      const totalInv = fns.reduce((a,f)=>a+(f.invocations||0),0);
-      const totalErr = fns.reduce((a,f)=>a+(f.errors||0),0);
-      document.getElementById('lam-err').textContent = totalInv>0?((totalErr/totalInv)*100).toFixed(2)+'%':'0%';
-      const avgDur = fns.length ? Math.round(fns.reduce((a,f)=>a+(f.avgDuration||0),0)/fns.length) : 0;
-      document.getElementById('lam-dur').textContent = avgDur+'ms';
-      document.getElementById('lambdaTableWrap').innerHTML = fns.length
-        ? `<table class="fn-table"><thead><tr><th>Function</th><th>Runtime</th><th>Memory</th><th>Invocations</th><th>Errors</th><th>Avg Duration</th><th>Last Modified</th></tr></thead>
-          <tbody>${fns.map(fn=>`<tr>
-            <td style="color:var(--text);font-weight:600">${fn.name}</td>
-            <td><span class="runtime-badge">${fn.runtime||'—'}</span></td>
-            <td>${fn.memory??'—'} MB</td>
-            <td style="color:var(--green)">${fmtNum(fn.invocations||0)}</td>
-            <td style="color:${(fn.errors||0)>0?'var(--red)':'var(--green)'}">${fn.errors||0}</td>
-            <td>${fn.avgDuration?fn.avgDuration+'ms':'—'}</td>
-            <td style="color:var(--text3)">${fn.lastModified?new Date(fn.lastModified).toLocaleDateString():'—'}</td>
-          </tr>`).join('')}</tbody></table>`
-        : '<div class="state-msg">No Lambda functions found</div>';
-    }
-    if (chart.status==='fulfilled') {
-      const d = chart.value;
-      const labels = (d.timestamps||[]).map(t=>new Date(t).getHours().toString().padStart(2,'0')+':00');
-      if (charts.lambdaInvoc) charts.lambdaInvoc.destroy();
-      charts.lambdaInvoc = new Chart(document.getElementById('lambdaInvocChart'),{type:'line',data:{labels,datasets:[{label:'Invocations',data:d.invocations,borderColor:'#1fcc8a',backgroundColor:'rgba(31,204,138,.06)',borderWidth:1.5,pointRadius:0,tension:.4,fill:true}]},options:chartOpts()});
-      if (charts.lambdaCold) charts.lambdaCold.destroy();
-      charts.lambdaCold = new Chart(document.getElementById('lambdaColdChart'),{type:'line',data:{labels,datasets:[{label:'Errors',data:d.errors,borderColor:'#f04e4e',backgroundColor:'rgba(240,78,78,.06)',borderWidth:1.5,pointRadius:0,tension:.4,fill:true}]},options:chartOpts()});
-    }
-  } catch(e) { console.error('LambdaPage:', e); }
+// ── Download helper ──
+function downloadFile(content, filename, mimeType) {
+  const blob = new Blob([content], {type: mimeType});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
-// ─── API Gateway Page ─────────────────────────────────────────────────────────
-async function loadAPIPage() {
-  try {
-    const d = await apiPost('/api/service-health');
-    const apiH = d.health.find(h=>h.name==='apigateway');
-    document.getElementById('api-total').textContent = apiH?.count??'0';
-    document.getElementById('api-reqs').textContent = '—';
-    document.getElementById('api-lat').textContent = document.getElementById('m-lat').textContent;
-    document.getElementById('api-5xx').textContent = '—';
-    document.getElementById('apiTableWrap').innerHTML = `<div style="padding:16px;text-align:center;color:var(--text3);font-size:12px">
-      <i class="ti ti-api" style="font-size:28px;display:block;margin-bottom:8px;color:var(--blue);opacity:.6"></i>
-      Found <strong style="color:var(--text)">${apiH?.count??0} API${(apiH?.count??0)!==1?'s':''}</strong> in ${creds.region}
-      <br><br><a href="https://console.aws.amazon.com/apigateway" target="_blank" style="color:var(--blue)">View in AWS Console →</a>
-    </div>`;
-  } catch(e) { console.error('APIPage:', e); }
-}
+// ── Chart defaults ──
+function chartOpts(){return{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},color:'#5a5e72',maxTicksLimit:6},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{font:{size:10},color:'#5a5e72'},grid:{color:'rgba(255,255,255,.04)'}}}};}
 
-// ─── DynamoDB Page ────────────────────────────────────────────────────────────
-async function loadDDBPage() {
-  try {
-    const d = await apiPost('/api/dynamodb');
-    const tables = d.tables||[];
-    document.getElementById('ddb-total').textContent = tables.length;
-    document.getElementById('ddb-rcu').textContent = fmtNum(tables.reduce((a,t)=>a+(t.rcuConsumed||0),0));
-    document.getElementById('ddb-wcu').textContent = fmtNum(tables.reduce((a,t)=>a+(t.wcuConsumed||0),0));
-    document.getElementById('ddb-throttle').textContent = tables.reduce((a,t)=>a+(t.throttled||0),0);
-    document.getElementById('ddbTableWrap').innerHTML = tables.length
-      ? `<table class="fn-table"><thead><tr><th>Table</th><th>Status</th><th>Items</th><th>Size</th><th>RCU</th><th>WCU</th><th>Mode</th></tr></thead>
-        <tbody>${tables.map(t=>`<tr>
-          <td style="color:var(--text);font-weight:600">${t.name}</td>
-          <td style="color:var(--green)">${t.status||'ACTIVE'}</td>
-          <td>${fmtNum(t.itemCount||0)}</td>
-          <td>${t.sizeBytes?fmtBytes(t.sizeBytes):'—'}</td>
-          <td style="color:var(--blue)">${t.rcuConsumed||0}</td>
-          <td style="color:var(--amber)">${t.wcuConsumed||0}</td>
-          <td style="color:var(--text3)">${t.billingMode||'PROVISIONED'}</td>
-        </tr>`).join('')}</tbody></table>`
-      : '<div class="state-msg">No DynamoDB tables found</div>';
-    if (tables.length) {
-      const labels = tables.map(t=>t.name.length>10?t.name.slice(0,10)+'…':t.name);
-      if (charts.ddbDetail) charts.ddbDetail.destroy();
-      charts.ddbDetail = new Chart(document.getElementById('ddbDetailChart'),{type:'bar',data:{labels,datasets:[{label:'RCU',data:tables.map(t=>t.rcuConsumed||0),backgroundColor:'#4d8ef0',borderRadius:3},{label:'WCU',data:tables.map(t=>t.wcuConsumed||0),backgroundColor:'#f5a623',borderRadius:3}]},options:chartOpts()});
-    }
-  } catch(e) { console.error('DDBPage:', e); }
-}
-
-// ─── S3 Page ──────────────────────────────────────────────────────────────────
-async function loadS3Page() {
-  try {
-    const d = await apiPost('/api/s3');
-    const buckets = d.buckets||[];
-    document.getElementById('s3TableWrap').innerHTML = buckets.length
-      ? `<table class="fn-table"><thead><tr><th>Bucket Name</th><th>Region</th><th>Created</th></tr></thead>
-        <tbody>${buckets.map(b=>`<tr>
-          <td style="color:var(--text);font-weight:600"><i class="ti ti-bucket" style="color:var(--red);margin-right:6px"></i>${b.name}</td>
-          <td style="color:var(--text3)">${b.region||creds.region}</td>
-          <td style="color:var(--text3)">${b.createdAt?new Date(b.createdAt).toLocaleDateString():'—'}</td>
-        </tr>`).join('')}</tbody></table>`
-      : '<div class="state-msg">No S3 buckets found</div>';
-  } catch(e) { console.error('S3Page:', e); }
-}
-
-// ─── SQS Page ─────────────────────────────────────────────────────────────────
-async function loadSQSPage() {
-  try {
-    const d = await apiPost('/api/sqs');
-    const queues = d.queues||[];
-    document.getElementById('sqs-total').textContent = queues.length;
-    document.getElementById('sqs-depth').textContent = fmtNum(queues.reduce((a,q)=>a+q.depth,0));
-    document.getElementById('sqs-dlq').textContent = fmtNum(queues.filter(q=>q.isDLQ).reduce((a,q)=>a+q.depth,0));
-    document.getElementById('sqs-flight').textContent = fmtNum(queues.reduce((a,q)=>a+q.inFlight,0));
-    document.getElementById('sqsFullPanel').innerHTML = queues.length
-      ? `<table class="fn-table"><thead><tr><th>Queue</th><th>Type</th><th>Depth</th><th>In-Flight</th><th>Delayed</th></tr></thead>
-        <tbody>${queues.map(q=>`<tr>
-          <td style="color:${q.isDLQ?'var(--red)':'var(--text)'};font-weight:600">${q.name}${q.isDLQ?' <span style="color:var(--red);font-size:10px">[DLQ]</span>':''}</td>
-          <td style="color:var(--text3)">${q.isDLQ?'Dead Letter':'Standard'}</td>
-          <td style="color:${q.depth>100?'var(--red)':q.depth>10?'var(--amber)':'var(--green)'};font-weight:700">${fmtNum(q.depth)}</td>
-          <td style="color:var(--text3)">${q.inFlight}</td>
-          <td style="color:var(--text3)">${q.delayed||0}</td>
-        </tr>`).join('')}</tbody></table>`
-      : '<div class="state-msg">No SQS queues found</div>';
-  } catch(e) { console.error('SQSPage:', e); }
-}
-
-// ─── Logs Page ────────────────────────────────────────────────────────────────
-async function loadLogsPage() {
-  try {
-    const d = await apiPost('/api/logs');
-    const stream = document.getElementById('fullLogStream');
-    const filter = document.getElementById('logFilter').value;
-    let events = d.events||[];
-    if (filter!=='all') events = events.filter(e=>e.level===filter);
-    stream.innerHTML = events.length
-      ? events.map(e=>`<div class="log-entry ${e.level}">
-          <span class="log-time">${new Date(e.timestamp).toTimeString().slice(0,8)}</span>
-          <span class="log-level">${e.level.toUpperCase()}</span>
-          <span class="log-msg">[${(e.logGroup||'').split('/').pop()}] ${e.message}</span>
-        </div>`).join('')
-      : '<div class="log-empty">No log events found</div>';
-  } catch(e) { console.error('LogsPage:', e); }
-}
-document.getElementById('logFilter').addEventListener('change', ()=>{ if(creds) loadLogsPage(); });
-
-// ─── Metrics Page ─────────────────────────────────────────────────────────────
-async function loadMetricsPage() {
-  try {
-    const d = await apiPost('/api/invocations-chart');
-    const labels = (d.timestamps||[]).map(t=>new Date(t).getHours().toString().padStart(2,'0')+':00');
-    const mkChart = (id, key, color, label) => {
-      if (charts[id]) charts[id].destroy();
-      charts[id] = new Chart(document.getElementById(id),{type:'line',data:{labels,datasets:[{label,data:d[key]||[],borderColor:color,backgroundColor:color+'11',borderWidth:1.5,pointRadius:0,tension:.4,fill:true}]},options:chartOpts()});
-    };
-    mkChart('metricsInvocChart','invocations','#1fcc8a','Invocations');
-    mkChart('metricsErrChart','errors','#f04e4e','Errors');
-    mkChart('metricsDurChart','invocations','#4d8ef0','Duration');
-    const dd = await apiPost('/api/dynamodb');
-    const tables = dd.tables||[];
-    if (charts.metricsCap) charts.metricsCap.destroy();
-    charts.metricsCap = new Chart(document.getElementById('metricsCapChart'),{type:'bar',data:{labels:tables.map(t=>t.name.slice(0,10)),datasets:[{label:'RCU',data:tables.map(t=>t.rcuConsumed||0),backgroundColor:'#4d8ef0',borderRadius:3},{label:'WCU',data:tables.map(t=>t.wcuConsumed||0),backgroundColor:'#f5a623',borderRadius:3}]},options:chartOpts()});
-  } catch(e) { console.error('MetricsPage:', e); }
-}
-
-// ─── Alerts Page ──────────────────────────────────────────────────────────────
-async function loadAlertsPage() {
-  try {
-    const d = await apiPost('/api/logs');
-    const events = (d.events||[]).filter(e=>e.level==='error'||e.level==='warn');
-    document.getElementById('alertsPanel').innerHTML = events.length
-      ? events.map(e=>`<div class="alert-item ${e.level}">
-          <i class="ti ${e.level==='error'?'ti-alert-circle':'ti-alert-triangle'} alert-icon"></i>
-          <div class="alert-body">
-            <div class="alert-title">${e.level==='error'?'Error':'Warning'} in ${(e.logGroup||'').split('/').pop()||'Lambda'}</div>
-            <div class="alert-detail">${e.message||''}</div>
-          </div>
-          <div class="alert-time">${new Date(e.timestamp).toTimeString().slice(0,8)}</div>
-        </div>`).join('')
-      : '<div class="state-msg"><i class="ti ti-check" style="font-size:28px;display:block;margin-bottom:8px;opacity:.4;color:var(--green)"></i>No alerts — all systems healthy</div>';
-  } catch(e) { console.error('AlertsPage:', e); }
-}
-
-// ─── Settings ─────────────────────────────────────────────────────────────────
-function updateAPI(val) { API = val; }
-function saveSettings() {
-  API = document.getElementById('setting-api').value;
-  alert('Settings saved!');
-}
-
-// ─── Chart defaults ───────────────────────────────────────────────────────────
-function chartOpts() {
-  return {responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-    scales:{x:{ticks:{font:{size:10},color:'#5a5e72',maxTicksLimit:6},grid:{color:'rgba(255,255,255,.04)'}},
-      y:{ticks:{font:{size:10},color:'#5a5e72'},grid:{color:'rgba(255,255,255,.04)'}}}};
-}
-
-// ─── Utils ────────────────────────────────────────────────────────────────────
-function fmtNum(n) {
-  if(n>=1_000_000) return (n/1_000_000).toFixed(1)+'M';
-  if(n>=1_000) return (n/1_000).toFixed(1)+'k';
-  return String(n);
-}
-function fmtBytes(b) {
-  if(b>=1e9) return (b/1e9).toFixed(1)+' GB';
-  if(b>=1e6) return (b/1e6).toFixed(1)+' MB';
-  if(b>=1e3) return (b/1e3).toFixed(1)+' KB';
-  return b+' B';
-}
+// ── Utils ──
+function fmtNum(n){if(n>=1_000_000)return(n/1_000_000).toFixed(1)+'M';if(n>=1_000)return(n/1_000).toFixed(1)+'k';return String(n);}
+function fmtBytes(b){if(b>=1e9)return(b/1e9).toFixed(1)+' GB';if(b>=1e6)return(b/1e6).toFixed(1)+' MB';if(b>=1e3)return(b/1e3).toFixed(1)+' KB';return b+' B';}
 </script>
-</body>
-</html>
+</body></html>
+HTMLEOF
+echo "done"
