@@ -469,16 +469,22 @@ body{background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overf
       </div>
 
       <!-- TRACES -->
-      <div class="page" id="page-traces">
-        <div class="page-header"><h2><i class="ti ti-git-branch" style="color:var(--purple)"></i> X-Ray Traces</h2><p>Distributed tracing for your serverless application</p></div>
-        <div class="card">
-          <div style="text-align:center;padding:40px 20px">
-            <i class="ti ti-git-branch" style="font-size:40px;color:var(--purple);opacity:.5;display:block;margin-bottom:12px"></i>
-            <p style="color:var(--text2);font-size:13px;margin-bottom:8px">Enable X-Ray tracing on your Lambda functions to see distributed traces here</p>
-            <p style="color:var(--text3);font-size:11px">AWS Console → Lambda → Configuration → Monitoring → Enable X-Ray Active Tracing</p>
-          </div>
-        </div>
-      </div>
+     <div class="page" id="page-traces">
+  <div class="page-header">
+    <h2>
+      <i class="ti ti-git-branch" style="color:var(--purple)"></i>
+      X-Ray Traces
+    </h2>
+
+    <p>
+      Distributed tracing for your serverless application
+    </p>
+  </div>
+
+  <div class="card">
+      <div id="xrayContent"></div>
+  </div>
+</div>
 
       <!-- ALERTS -->
       <div class="page" id="page-alerts">
